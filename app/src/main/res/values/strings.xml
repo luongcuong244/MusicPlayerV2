@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MusicPlayerV2</string>
+    <string name="sign_in">Sign In</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="continue_txt">Continue</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="back">Back</string>
 </resources>
