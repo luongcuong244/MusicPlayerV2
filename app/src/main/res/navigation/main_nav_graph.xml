@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/libraryFragment">
+
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.kma.musicplayerv2.ui.screen.library.LibraryFragment"
+        android:label="LibraryFragment"
+        tools:layout="@layout/fragment_library" />
+
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.kma.musicplayerv2.ui.screen.explore.ExploreFragment"
+        android:label="ExploreFragment"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@+id/rankFragment"
+        android:name="com.kma.musicplayerv2.ui.screen.rank.RankFragment"
+        android:label="RankFragment"
+        tools:layout="@layout/fragment_rank" />
+
+    <fragment
+        android:id="@+id/personalFragment"
+        android:name="com.kma.musicplayerv2.ui.screen.personal.PersonalFragment"
+        android:label="PersonalFragment"
+        tools:layout="@layout/fragment_personal" />
+
+</navigation>
