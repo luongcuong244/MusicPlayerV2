@@ -1,5 +1,6 @@
 package com.kma.musicplayerv2.model
 
+import java.io.Serializable
 import kotlin.random.Random
 
 data class Song(
@@ -12,4 +13,4 @@ data class Song(
     var isFavourite: Boolean = Random.nextBoolean(),
     var isDownloaded: Boolean = Random.nextBoolean(),
     var isPremium: Boolean = Random.nextBoolean()
-)
+) : Serializable

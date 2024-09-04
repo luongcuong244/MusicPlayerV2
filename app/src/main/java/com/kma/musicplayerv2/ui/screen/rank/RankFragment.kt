@@ -1,7 +1,7 @@
 package com.kma.musicplayerv2.ui.screen.rank
 
 import android.os.Bundle
-import com.kma.musicplayer.ui.screen.core.BaseFragment
+import com.kma.musicplayerv2.ui.core.BaseFragment
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.FragmentLibraryBinding
 

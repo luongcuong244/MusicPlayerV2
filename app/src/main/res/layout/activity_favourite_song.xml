@@ -54,11 +54,12 @@
                     android:textSize="@dimen/_20ssp" />
 
                 <TextView
+                    android:id="@+id/tv_total_song"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:fontFamily="@font/nunito_semibold"
-                    android:text="54 bài hát"
+                    android:text="0 bài hát"
                     android:textColor="#CDCECE"
                     android:textSize="@dimen/_10ssp" />
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:auto_show="true"
+            app:controller_layout_id="@layout/layout_audio_controller"
+            app:hide_on_touch="false"
+            app:player_layout_id="@layout/exo_player_view"
+            app:resize_mode="fill"
+            app:show_timeout="0"
+            app:use_artwork="false"
+            app:use_controller="true" />
+
+    </LinearLayout>
+
+</layout>

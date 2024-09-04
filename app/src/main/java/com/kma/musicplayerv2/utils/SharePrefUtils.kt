@@ -1,0 +1,38 @@
+package com.kma.musicplayerv2.utils
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+
+object SharePrefUtils {
+    private var mSharePref: SharedPreferences? = null
+    fun init(context: Context) {
+        if (mSharePref == null) {
+            mSharePref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        }
+    }
+
+    fun saveSongIds(songIds: List<Long>): Boolean {
+        val editor = mSharePref!!.edit()
+        editor.putString("songIds", songIds.joinTo(StringBuilder(), ",").toString())
+        return editor.commit()
+    }
+
+    fun getSongIds(): List<Long>? {
+        val songIds = mSharePref!!.getString("songIds", "")
+        if (songIds.isNullOrEmpty()) {
+            return null
+        }
+        return songIds.split(",").map { it.toLong() }
+    }
+
+    fun saveCurrentSongIndex(index: Int): Boolean {
+        val editor = mSharePref!!.edit()
+        editor.putInt("currentSongIndex", index)
+        return editor.commit()
+    }
+
+    fun getCurrentSongIndex(): Int {
+        return mSharePref!!.getInt("currentSongIndex", -1)
+    }
+}

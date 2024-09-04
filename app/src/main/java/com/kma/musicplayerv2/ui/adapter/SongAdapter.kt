@@ -69,7 +69,7 @@ class SongAdapter(
                 onClickUnFavourite(song, adapterPosition)
             }
 
-            binding.progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
             Glide.with(binding.root.context)
                 .load(song.thumbnail)
                 .listener(object : RequestListener<Drawable> {

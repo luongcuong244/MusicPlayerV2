@@ -1,15 +1,25 @@
 package com.kma.musicplayerv2.ui.screen.favouritesong
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.ActivityFavouriteSongBinding
+import com.kma.musicplayerv2.network.common.ApiCallback
+import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.ui.adapter.SongAdapter
+import com.kma.musicplayerv2.ui.bottomsheet.AddToPlaylistBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.FilterByArtistBottomSheet
+import com.kma.musicplayerv2.ui.bottomsheet.SongOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SortByBottomSheet
 import com.kma.musicplayerv2.ui.core.BaseActivity
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
+import com.kma.musicplayerv2.ui.screen.playsong.PlaySongActivity
+import com.kma.musicplayerv2.utils.Constant
+import com.kma.musicplayerv2.utils.ShareUtils
+import com.kma.musicplayerv2.utils.SongDownloader
+import java.io.Serializable
 
 class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
 
@@ -22,6 +32,7 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         favouriteSongViewModel = ViewModelProvider(this)[FavouriteSongViewModel::class.java]
+        favouriteSongViewModel.fetchFavouriteSongs(this)
         setupListeners()
         setupObservers()
         setupSongAdapter()
@@ -56,17 +67,123 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
             favouriteSongViewModel.sortSongs()
             songAdapter.notifyDataSetChanged()
         }
+        favouriteSongViewModel.totalSongs.observe(this) {
+            binding.tvTotalSong.text = "${favouriteSongViewModel.songs.size} ${getString(R.string.song)}"
+        }
     }
 
     private fun setupSongAdapter() {
         songAdapter = SongAdapter(
             songs = favouriteSongViewModel.tempSongs,
-            onClickMore = { },
+            onClickMore = { song ->
+                val bottomSheet = SongOptionBottomSheet(
+                    song = song,
+                    onClickShare = {
+                        ShareUtils.shareSong(this, it)
+                    },
+                    onClickDownload = {
+                        SongDownloader.downloadSong(
+                            context = this,
+                            song = song,
+                            onDownloadSuccess = {
+                                song.isDownloaded = true
+                                songAdapter.notifyDataSetChanged()
+                                Toast.makeText(this, getString(R.string.download_successfully), Toast.LENGTH_SHORT).show()
+                            },
+                            onDownloadFailed = {
+                                Toast.makeText(this, getString(R.string.download_failed), Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    },
+                    onClickAddToFavorite = {
+                        if (it.isFavourite) {
+                            favouriteSongViewModel.unFavouriteSong(
+                                context = this,
+                                song = it,
+                                onUnFavouriteSuccess = {
+                                    it.isFavourite = false
+                                    songAdapter.notifyDataSetChanged()
+                                }
+                            )
+                        }
+                    },
+                    onClickAddToPlaylist = {
+                        val addToPlaylistBottomSheet = AddToPlaylistBottomSheet(
+                            onClickPlaylist = {playlist ->
+                                // Add song to playlist
+                                PlaylistRepository.addSongToPlaylist(
+                                    songId = song.id,
+                                    playlistId = playlist.id,
+                                    apiCallback = object : ApiCallback<Boolean> {
+                                        override fun onSuccess(data: Boolean?) {
+                                            if (data == null) {
+                                                onFailure("Unknown error")
+                                                return
+                                            }
+                                            if (data) {
+                                                Toast.makeText(
+                                                    this@FavouriteSongActivity,
+                                                    "Thêm bài hát vào playlist thành công",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                playlist.totalSong++
+                                            } else {
+                                                Toast.makeText(
+                                                    this@FavouriteSongActivity,
+                                                    "Failed to add song to playlist",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+
+                                        override fun onFailure(message: String) {
+                                            Toast.makeText(
+                                                this@FavouriteSongActivity,
+                                                "Failed to add song to playlist: $message",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                )
+                            }
+                        )
+                        addToPlaylistBottomSheet.show(supportFragmentManager, addToPlaylistBottomSheet.tag)
+                    },
+                    onClickPlayNext = {
+
+                    },
+                    onClickHideSong = {
+                        favouriteSongViewModel.hideSong(
+                            context = this,
+                            song = it,
+                            onHideSuccess = {
+                                songAdapter.notifyDataSetChanged()
+                            }
+                        )
+                    }
+                )
+                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+            },
             onClickUnFavourite = { song, position ->
-                favouriteSongViewModel.unFavouriteSong(song)
+                favouriteSongViewModel.unFavouriteSong(
+                    context = this,
+                    song = song,
+                    onUnFavouriteSuccess = {
+                        song.isFavourite = false
+                        songAdapter.notifyDataSetChanged()
+                    }
+                )
                 songAdapter.notifyItemRemoved(position)
             },
-            onClickItem = { }
+            onClickItem = {
+                showActivity(
+                    PlaySongActivity::class.java,
+                    Bundle().apply {
+                        putInt(Constant.BUNDLE_START_FROM_INDEX, favouriteSongViewModel.tempSongs.indexOf(it))
+                        putSerializable(Constant.BUNDLE_SONGS, favouriteSongViewModel.tempSongs as Serializable)
+                    },
+                )
+            }
         )
         binding.rvFavouriteSong.apply {
             adapter = songAdapter

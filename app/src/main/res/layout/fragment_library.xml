@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_color"
         android:orientation="vertical"
-        android:paddingHorizontal="@dimen/_13sdp"
         android:paddingTop="@dimen/_20sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/_13sdp">
 
             <TextView
                 android:layout_width="0dp"
@@ -34,7 +34,9 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/_13sdp"
             android:paddingTop="@dimen/_13sdp">
 
             <LinearLayout
@@ -198,13 +200,18 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_your_playlist"
-                    android:layout_marginBottom="@dimen/_13sdp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp" />
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_13sdp" />
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <FrameLayout
+            android:id="@+id/bottom_mini_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </layout>

@@ -8,9 +8,17 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.MutableLiveData
+import com.kma.musicplayerv2.R
+import com.kma.musicplayerv2.service.PlaySongService
+import com.kma.musicplayerv2.service.ServiceController
+import com.kma.musicplayerv2.ui.customview.BottomMiniAudioPlayer
+import com.kma.musicplayerv2.utils.SharePrefUtils
 import com.kma.musicplayerv2.utils.SystemUtil
 
 abstract class BaseActivity<DB : ViewDataBinding> : AppCompatActivity(), ServiceConnection {
@@ -18,30 +26,26 @@ abstract class BaseActivity<DB : ViewDataBinding> : AppCompatActivity(), Service
     lateinit var binding: DB
     private var currentApiVersion = 0
 
-//    private var _songService: PlaySongService? = null
-//    val songService: PlaySongService?
-//        get() = _songService
-//
-//    val mBound = MutableLiveData<Boolean>().apply {
-//        value = false
-//    }
+    private var _songService: PlaySongService? = null
+    val songService: PlaySongService?
+        get() = _songService
+
+    val mBound = MutableLiveData<Boolean>().apply {
+        value = false
+    }
     override fun onServiceConnected(className: ComponentName, service: IBinder) {
-//        val binder = service as PlaySongService.LocalBinder
-//        _songService = binder.getService()
-//        mBound.value = true
-//
-//        getThemeViewModel().theme.observe(this) {
-//            onThemeChanged(it)
-//        }
+        val binder = service as PlaySongService.LocalBinder
+        _songService = binder.getService()
+        mBound.value = true
     }
 
     override fun onServiceDisconnected(className: ComponentName) {
-        // mBound.value = false
+         mBound.value = false
     }
-//
-//    fun isServiceBound(): Boolean {
-//        return mBound.value ?: false
-//    }
+
+    fun isServiceBound(): Boolean {
+        return mBound.value ?: false
+    }
 
     abstract fun getContentView(): Int
 
@@ -70,25 +74,29 @@ abstract class BaseActivity<DB : ViewDataBinding> : AppCompatActivity(), Service
         Log.d("CHECK_ACTIVITY", "onCreate: ${javaClass.simpleName}")
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//        if (!ServiceController.isServiceRunning(this, PlaySongService::class.java)) {
-//            startService(Intent(this, PlaySongService::class.java))
-//        }
-//        bindService(
-//            Intent(this, PlaySongService::class.java),
-//            this,
-//            BIND_AUTO_CREATE
-//        )
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        if (mBound.value == true) {
-//            unbindService(this)
-//            mBound.value = false
-//        }
-//    }
+    override fun onStart() {
+        super.onStart()
+        val songIds = SharePrefUtils.getSongIds()
+        if (songIds.isNullOrEmpty()) {
+            return
+        }
+        if (!ServiceController.isServiceRunning(this, PlaySongService::class.java)) {
+            startService(Intent(this, PlaySongService::class.java))
+        }
+        bindService(
+            Intent(this, PlaySongService::class.java),
+            this,
+            BIND_AUTO_CREATE
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mBound.value == true) {
+            unbindService(this)
+            mBound.value = false
+        }
+    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -110,31 +118,31 @@ abstract class BaseActivity<DB : ViewDataBinding> : AppCompatActivity(), Service
         startActivity(intent)
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        val bottomMiniPlayer =
-//            binding.root.findViewById<FrameLayout>(R.id.bottom_mini_player)
-//
-//        if (bottomMiniPlayer != null && ServiceController.isServiceRunning(this, PlaySongService::class.java)) {
-//            bottomMiniPlayer.visibility = View.VISIBLE
-//            mBound.observe(this) {
-//                if (it) {
-//                    songService?.let {
-//                        if (it.bottomMiniAudioPlayer == null) {
-//                            it.bottomMiniAudioPlayer = BottomMiniAudioPlayer(this)
-//                            it.bottomMiniAudioPlayer!!.activity = this
-//                            it.bottomMiniAudioPlayer!!.initView(it)
-//                        }
-//                        it.bottomMiniAudioPlayer!!.activity = this
-//                        it.bottomMiniAudioPlayer!!.parent?.let { parent ->
-//                            (parent as ViewGroup).removeView(it.bottomMiniAudioPlayer!!)
-//                        }
-//                        bottomMiniPlayer.addView(it.bottomMiniAudioPlayer)
-//                    }
-//                }
-//            }
-//        } else {
-//            bottomMiniPlayer?.visibility = View.GONE
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        val bottomMiniPlayer =
+            binding.root.findViewById<FrameLayout>(R.id.bottom_mini_player)
+
+        if (bottomMiniPlayer != null && ServiceController.isServiceRunning(this, PlaySongService::class.java)) {
+            bottomMiniPlayer.visibility = View.VISIBLE
+            mBound.observe(this) {
+                if (it) {
+                    songService?.let {
+                        if (it.bottomMiniAudioPlayer == null) {
+                            it.bottomMiniAudioPlayer = BottomMiniAudioPlayer(this)
+                            it.bottomMiniAudioPlayer!!.activity = this
+                            it.bottomMiniAudioPlayer!!.initView(it)
+                        }
+                        it.bottomMiniAudioPlayer!!.activity = this
+                        it.bottomMiniAudioPlayer!!.parent?.let { parent ->
+                            (parent as ViewGroup).removeView(it.bottomMiniAudioPlayer!!)
+                        }
+                        bottomMiniPlayer.addView(it.bottomMiniAudioPlayer)
+                    }
+                }
+            }
+        } else {
+            bottomMiniPlayer?.visibility = View.GONE
+        }
+    }
 }

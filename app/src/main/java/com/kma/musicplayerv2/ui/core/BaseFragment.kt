@@ -1,14 +1,18 @@
-package com.kma.musicplayer.ui.screen.core
+package com.kma.musicplayerv2.ui.core
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.kma.musicplayerv2.ui.core.BaseActivity
+import com.kma.musicplayerv2.R
+import com.kma.musicplayerv2.service.PlaySongService
+import com.kma.musicplayerv2.service.ServiceController
+import com.kma.musicplayerv2.ui.customview.BottomMiniAudioPlayer
 import com.kma.musicplayerv2.utils.SystemUtil
 
 abstract class BaseFragment<DB : ViewDataBinding> : Fragment() {
@@ -61,30 +65,30 @@ abstract class BaseFragment<DB : ViewDataBinding> : Fragment() {
         startActivityForResult(intent, requestCode)
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        val bottomMiniPlayer =
-//            binding.root.findViewById<FrameLayout>(R.id.bottom_mini_player)
-//
-//        if (bottomMiniPlayer != null && ServiceController.isServiceRunning(requireContext(), PlaySongService::class.java)) {
-//            getBaseActivity().mBound.observe(this) {
-//                if (it) {
-//                    getBaseActivity().songService?.let {
-//                        if (it.bottomMiniAudioPlayer == null) {
-//                            it.bottomMiniAudioPlayer = BottomMiniAudioPlayer(requireActivity())
-//                            it.bottomMiniAudioPlayer!!.activity = getBaseActivity()
-//                            it.bottomMiniAudioPlayer!!.initView(it)
-//                        }
-//                        it.bottomMiniAudioPlayer!!.activity = getBaseActivity()
-//                        it.bottomMiniAudioPlayer!!.parent?.let { parent ->
-//                            (parent as ViewGroup).removeView(it.bottomMiniAudioPlayer!!)
-//                        }
-//                        bottomMiniPlayer.addView(it.bottomMiniAudioPlayer)
-//                    }
-//                }
-//            }
-//        } else {
-//            bottomMiniPlayer?.visibility = View.GONE
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        val bottomMiniPlayer =
+            binding.root.findViewById<FrameLayout>(R.id.bottom_mini_player)
+
+        if (bottomMiniPlayer != null && ServiceController.isServiceRunning(requireContext(), PlaySongService::class.java)) {
+            getBaseActivity().mBound.observe(this) {
+                if (it) {
+                    getBaseActivity().songService?.let {
+                        if (it.bottomMiniAudioPlayer == null) {
+                            it.bottomMiniAudioPlayer = BottomMiniAudioPlayer(requireActivity())
+                            it.bottomMiniAudioPlayer!!.activity = getBaseActivity()
+                            it.bottomMiniAudioPlayer!!.initView(it)
+                        }
+                        it.bottomMiniAudioPlayer!!.activity = getBaseActivity()
+                        it.bottomMiniAudioPlayer!!.parent?.let { parent ->
+                            (parent as ViewGroup).removeView(it.bottomMiniAudioPlayer!!)
+                        }
+                        bottomMiniPlayer.addView(it.bottomMiniAudioPlayer)
+                    }
+                }
+            }
+        } else {
+            bottomMiniPlayer?.visibility = View.GONE
+        }
+    }
 }

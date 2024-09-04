@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/_13sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_bold"
+            android:text="@string/another_option"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_20sdp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_38sdp"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="@dimen/_13sdp"
+                android:background="@drawable/bg_wheel_view_highlight" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <com.kma.musicplayerv2.ui.customview.WheelView
+                    android:id="@+id/hour_wheel_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_115sdp"
+                    android:background="@android:color/transparent"
+                    app:wv_curvedArcDirection="center"
+                    app:wv_cyclic="true"
+                    app:wv_integerFormat=""
+                    app:wv_dividerColor="@color/transparent"
+                    app:wv_dividerHeight="1px"
+                    app:wv_lineSpacing="@dimen/_22sdp"
+                    app:wv_normalItemTextColor="#787B82"
+                    app:wv_selectedItemTextColor="@color/white"
+                    app:wv_showDivider="false"
+                    app:wv_textAlign="center"
+                    app:wv_textSize="@dimen/_16sdp"
+                    app:wv_visibleItems="3" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_50sdp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text=":"
+                        android:textColor="#787B82"
+                        android:textSize="@dimen/_13ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/_22sdp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text=":"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_13ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text=":"
+                        android:textColor="#787B82"
+                        android:textSize="@dimen/_13ssp" />
+
+                </LinearLayout>
+
+                <com.kma.musicplayerv2.ui.customview.WheelView
+                    android:id="@+id/minute_wheel_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_115sdp"
+                    android:background="@android:color/transparent"
+                    app:wv_curvedArcDirection="center"
+                    app:wv_cyclic="true"
+                    app:wv_dividerColor="@color/transparent"
+                    app:wv_dividerHeight="1px"
+                    app:wv_lineSpacing="@dimen/_22sdp"
+                    app:wv_normalItemTextColor="#787B82"
+                    app:wv_selectedItemTextColor="@color/white"
+                    app:wv_showDivider="false"
+                    app:wv_textAlign="center"
+                    app:wv_textSize="@dimen/_16sdp"
+                    app:wv_visibleItems="3" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_7sdp"
+            android:layout_marginHorizontal="@dimen/_7sdp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/rl_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_gray_button"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <com.kma.musicplayerv2.ui.customview.MovableText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="@string/cancel"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_purple_button"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <com.kma.musicplayerv2.ui.customview.MovableText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:text="@string/save"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
