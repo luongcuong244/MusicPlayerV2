@@ -20,6 +20,7 @@ import com.kma.musicplayerv2.utils.Constant
 import com.kma.musicplayerv2.utils.ShareUtils
 import com.kma.musicplayerv2.utils.SongDownloader
 import java.io.Serializable
+import kotlin.random.Random
 
 class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
 
@@ -59,6 +60,21 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
             )
             filterByArtistBottomSheet.show(supportFragmentManager, filterByArtistBottomSheet.tag)
         }
+        binding.rlPlayRandomly.setOnClickListener {
+            showActivity(
+                PlaySongActivity::class.java,
+                Bundle().apply {
+                    putInt(
+                        Constant.BUNDLE_START_FROM_INDEX,
+                        Random.nextInt(favouriteSongViewModel.tempSongs.size)
+                    )
+                    putSerializable(
+                        Constant.BUNDLE_SONGS,
+                        favouriteSongViewModel.tempSongs as Serializable
+                    )
+                },
+            )
+        }
     }
 
     private fun setupObservers() {
@@ -68,7 +84,8 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
             songAdapter.notifyDataSetChanged()
         }
         favouriteSongViewModel.totalSongs.observe(this) {
-            binding.tvTotalSong.text = "${favouriteSongViewModel.songs.size} ${getString(R.string.song)}"
+            binding.tvTotalSong.text =
+                "${favouriteSongViewModel.songs.size} ${getString(R.string.song)}"
         }
     }
 
@@ -88,10 +105,18 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                             onDownloadSuccess = {
                                 song.isDownloaded = true
                                 songAdapter.notifyDataSetChanged()
-                                Toast.makeText(this, getString(R.string.download_successfully), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.download_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             },
                             onDownloadFailed = {
-                                Toast.makeText(this, getString(R.string.download_failed), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.download_failed),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         )
                     },
@@ -109,7 +134,7 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                     },
                     onClickAddToPlaylist = {
                         val addToPlaylistBottomSheet = AddToPlaylistBottomSheet(
-                            onClickPlaylist = {playlist ->
+                            onClickPlaylist = { playlist ->
                                 // Add song to playlist
                                 PlaylistRepository.addSongToPlaylist(
                                     songId = song.id,
@@ -147,7 +172,10 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                                 )
                             }
                         )
-                        addToPlaylistBottomSheet.show(supportFragmentManager, addToPlaylistBottomSheet.tag)
+                        addToPlaylistBottomSheet.show(
+                            supportFragmentManager,
+                            addToPlaylistBottomSheet.tag
+                        )
                     },
                     onClickPlayNext = {
 
@@ -179,8 +207,14 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                 showActivity(
                     PlaySongActivity::class.java,
                     Bundle().apply {
-                        putInt(Constant.BUNDLE_START_FROM_INDEX, favouriteSongViewModel.tempSongs.indexOf(it))
-                        putSerializable(Constant.BUNDLE_SONGS, favouriteSongViewModel.tempSongs as Serializable)
+                        putInt(
+                            Constant.BUNDLE_START_FROM_INDEX,
+                            favouriteSongViewModel.tempSongs.indexOf(it)
+                        )
+                        putSerializable(
+                            Constant.BUNDLE_SONGS,
+                            favouriteSongViewModel.tempSongs as Serializable
+                        )
                     },
                 )
             }

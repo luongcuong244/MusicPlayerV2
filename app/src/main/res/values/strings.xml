@@ -61,4 +61,6 @@
     <string name="save">LƯU</string>
     <string name="please_select_a_time">Vui lòng chọn thời gian</string>
     <string name="queue">Hàng đợi</string>
+    <string name="write_a_comment">Nhập bình luận</string>
+    <string name="no_comment_found">Không có bình luận nào</string>
 </resources>
