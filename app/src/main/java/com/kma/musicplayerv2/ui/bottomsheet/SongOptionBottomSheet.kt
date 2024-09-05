@@ -37,6 +37,25 @@ class SongOptionBottomSheet(
     }
 
     private fun initView() {
+        if (onClickShare == null) {
+            binding.ivShare.visibility = View.GONE
+        }
+        if (onClickDownload == null) {
+            binding.llDownload.visibility = View.GONE
+        }
+        if (onClickAddToFavorite == null) {
+            binding.llAddToFavourite.visibility = View.GONE
+        }
+        if (onClickAddToPlaylist == null) {
+            binding.llAddToPlaylist.visibility = View.GONE
+        }
+        if (onClickPlayNext == null) {
+            binding.llPlayNext.visibility = View.GONE
+        }
+        if (onClickHideSong == null) {
+            binding.llHideSong.visibility = View.GONE
+        }
+
         binding.tvTitle.text = song.title
         binding.tvArtist.text = song.artist.name
         binding.progressBar.visibility = View.VISIBLE

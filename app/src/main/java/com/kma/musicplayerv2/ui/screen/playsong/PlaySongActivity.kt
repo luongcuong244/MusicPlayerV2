@@ -21,11 +21,14 @@ import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
 import com.kma.musicplayerv2.ui.bottomsheet.AddToPlaylistBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SleepTimerBottomSheet
+import com.kma.musicplayerv2.ui.bottomsheet.SongCommentBottomSheet
+import com.kma.musicplayerv2.ui.bottomsheet.SongOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.song_queue.SongQueueBottomSheet
 import com.kma.musicplayerv2.ui.core.BaseActivity
 import com.kma.musicplayerv2.utils.Constant
 import com.kma.musicplayerv2.utils.SharePrefUtils
 import com.kma.musicplayerv2.utils.ShareUtils
+import com.kma.musicplayerv2.utils.SongDownloader
 
 
 class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
@@ -47,6 +50,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
     private lateinit var ivThumbnail: ImageView
     private lateinit var ivTimer: ImageView
     private lateinit var playerView: PlayerView
+    private lateinit var ivMore: ImageView
     private var exo_duration: TextView? = null
     private var exo_progress: DefaultTimeBar? = null
     private var exo_controller: LinearLayout? = null
@@ -75,6 +79,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
         ivThumbnail = findViewById(R.id.iv_thumbnail)
         ivTimer = findViewById(R.id.iv_timer)
         playerView = findViewById(R.id.player_view)
+        ivMore = findViewById(R.id.iv_more)
 
         if (!isFromMiniPlayer && SharePrefUtils.getSongIds().isNullOrEmpty()) {
             val songs = intent.getSerializableExtra(Constant.BUNDLE_SONGS)
@@ -162,53 +167,15 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
             )
         }
         llChat.setOnClickListener {
-            Toast.makeText(this, "Chat feature is coming soon", Toast.LENGTH_SHORT).show()
+            val songCommentBottomSheet = SongCommentBottomSheet(
+                song = songService?.playingSong?.value ?: return@setOnClickListener)
+            songCommentBottomSheet.show(
+                supportFragmentManager,
+                songCommentBottomSheet.tag
+            )
         }
         llAddToPlaylist.setOnClickListener {
-            val addToPlaylistBottomSheet = AddToPlaylistBottomSheet(
-                onClickPlaylist = { playlist ->
-                    // Add song to playlist
-                    val song = songService?.playingSong?.value ?: return@AddToPlaylistBottomSheet
-                    PlaylistRepository.addSongToPlaylist(
-                        songId = song.id,
-                        playlistId = playlist.id,
-                        apiCallback = object : ApiCallback<Boolean> {
-                            override fun onSuccess(data: Boolean?) {
-                                if (data == null) {
-                                    onFailure("Unknown error")
-                                    return
-                                }
-                                if (data) {
-                                    Toast.makeText(
-                                        this@PlaySongActivity,
-                                        "Thêm bài hát vào playlist thành công",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    playlist.totalSong++
-                                } else {
-                                    Toast.makeText(
-                                        this@PlaySongActivity,
-                                        "Failed to add song to playlist",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-
-                            override fun onFailure(message: String) {
-                                Toast.makeText(
-                                    this@PlaySongActivity,
-                                    "Failed to add song to playlist: $message",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    )
-                }
-            )
-            addToPlaylistBottomSheet.show(
-                supportFragmentManager,
-                addToPlaylistBottomSheet.tag
-            )
+            showAddSongToPlaylistBottomSheet()
         }
         llQueue.setOnClickListener {
             songService?.let {
@@ -237,6 +204,70 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
         }
         ivNext?.setOnClickListener {
             songService?.playNext()
+        }
+        ivMore.setOnClickListener {
+            val bottomSheet = SongOptionBottomSheet(
+                song = songService?.playingSong?.value ?: return@setOnClickListener,
+                onClickShare = {
+                    ShareUtils.shareSong(this, it)
+                },
+                onClickDownload = {song ->
+                    SongDownloader.downloadSong(
+                        context = this,
+                        song = song,
+                        onDownloadSuccess = {
+                            song.isDownloaded = true
+                            Toast.makeText(
+                                this,
+                                getString(R.string.download_successfully),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        onDownloadFailed = {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.download_failed),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    )
+                },
+                onClickAddToFavorite = {song ->
+                    if (song.isFavourite) {
+                        SongRepository.removeFavouriteSong(
+                            song,
+                            object : ApiCallback<Void> {
+                                override fun onSuccess(data: Void?) {
+                                    song.isFavourite = false
+                                    ivFavourite.setImageResource(R.drawable.ic_not_favourite)
+                                }
+
+                                override fun onFailure(message: String) {
+                                    Toast.makeText(this@PlaySongActivity, message, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    } else {
+                        SongRepository.addFavouriteSong(
+                            song,
+                            object : ApiCallback<Void> {
+                                override fun onSuccess(data: Void?) {
+                                    song.isFavourite = true
+                                    ivFavourite.setImageResource(R.drawable.ic_favourite)
+                                }
+
+                                override fun onFailure(message: String) {
+                                    Toast.makeText(this@PlaySongActivity, message, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    }
+                },
+                onClickAddToPlaylist = {
+                    showAddSongToPlaylistBottomSheet()
+                },
+            )
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
     }
 
@@ -269,6 +300,53 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
         songService?.playingSong?.observe(this) {
             updateUIBasedOnCurrentSong()
         }
+    }
+
+    private fun showAddSongToPlaylistBottomSheet() {
+        val addToPlaylistBottomSheet = AddToPlaylistBottomSheet(
+            onClickPlaylist = { playlist ->
+                // Add song to playlist
+                val song = songService?.playingSong?.value ?: return@AddToPlaylistBottomSheet
+                PlaylistRepository.addSongToPlaylist(
+                    songId = song.id,
+                    playlistId = playlist.id,
+                    apiCallback = object : ApiCallback<Boolean> {
+                        override fun onSuccess(data: Boolean?) {
+                            if (data == null) {
+                                onFailure("Unknown error")
+                                return
+                            }
+                            if (data) {
+                                Toast.makeText(
+                                    this@PlaySongActivity,
+                                    "Thêm bài hát vào playlist thành công",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                playlist.totalSong++
+                            } else {
+                                Toast.makeText(
+                                    this@PlaySongActivity,
+                                    "Failed to add song to playlist",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(message: String) {
+                            Toast.makeText(
+                                this@PlaySongActivity,
+                                "Failed to add song to playlist: $message",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                )
+            }
+        )
+        addToPlaylistBottomSheet.show(
+            supportFragmentManager,
+            addToPlaylistBottomSheet.tag
+        )
     }
 
     private fun updateUIBasedOnCurrentSong() {

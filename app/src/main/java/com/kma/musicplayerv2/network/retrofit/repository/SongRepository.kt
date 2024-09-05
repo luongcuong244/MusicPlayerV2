@@ -4,8 +4,12 @@ import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayer.network.retrofit.api.SongApi
 import com.kma.musicplayerv2.model.Artist
 import com.kma.musicplayerv2.model.Song
+import com.kma.musicplayerv2.model.SongComment
 import com.kma.musicplayerv2.network.common.ApiCallback
+import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
+import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
 import com.kma.musicplayerv2.network.retrofit.model.SongDto
+import org.w3c.dom.Comment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -391,6 +395,87 @@ object SongRepository {
                 }
 
                 override fun onFailure(call: Call<List<SongDto>>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun getCommentsBySongId(songId: Long, apiCallback: ApiCallback<List<SongComment>>) {
+        apiCallback.onSuccess(
+            listOf(
+                SongComment(
+                    id = 1,
+                    songId = 1,
+                    content = "Bài hát hay quá",
+                    userId = 1,
+                    userAvatar = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
+                    userName = "Ngô Thanh Vân",
+                    createdAt = "11 ngày trước"
+                ),
+                SongComment(
+                    id = 2,
+                    songId = 1,
+                    content = "nghe cuốn vãi",
+                    userId = 2,
+                    userAvatar = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
+                    userName = "Nhân Nguyễn",
+                    createdAt = "23 giờ trước"
+                ),
+                SongComment(
+                    id = 3,
+                    songId = 1,
+                    content = "mê nhất các bài trong album mới luôn í",
+                    userId = 3,
+                    userAvatar = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
+                    userName = "Bống",
+                    createdAt = "1 ngày trước"
+                )
+            )
+        )
+        return
+        songApi.getCommentsBySongId(songId).enqueue(
+            object : Callback<List<SongCommentDto>> {
+                override fun onResponse(call: Call<List<SongCommentDto>>, response: Response<List<SongCommentDto>>) {
+                    val comments = response.body()?.map { it.toSongComment() }
+                    if (comments != null) {
+                        apiCallback.onSuccess(comments)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<SongCommentDto>>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun addComment(songId: Long, content: String, apiCallback: ApiCallback<SongComment>) {
+        apiCallback.onSuccess(
+            SongComment(
+                id = 1,
+                songId = songId,
+                content = content,
+                userId = 1,
+                userAvatar = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
+                userName = "Là Tôi Đó",
+                createdAt = "Vừa xong"
+            )
+        )
+        return
+        songApi.addComment(AddCommentRequest(songId, content)).enqueue(
+            object : Callback<SongCommentDto> {
+                override fun onResponse(call: Call<SongCommentDto>, response: Response<SongCommentDto>) {
+                    if (response.body() != null) {
+                        apiCallback.onSuccess(response.body()!!.toSongComment())
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<SongCommentDto>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }

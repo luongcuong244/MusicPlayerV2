@@ -1,7 +1,10 @@
 package com.kma.musicplayer.network.retrofit.api
 
+import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
+import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
 import com.kma.musicplayerv2.network.retrofit.model.SongDto
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
@@ -26,4 +29,10 @@ interface SongApi {
 
     @GET
     fun getSongsById(songIds: List<Long>): Call<List<SongDto>>
+
+    @GET
+    fun getCommentsBySongId(songId: Long): Call<List<SongCommentDto>>
+
+    @POST("app/add-comment")
+    fun addComment(@Body request: AddCommentRequest): Call<SongCommentDto>
 }
