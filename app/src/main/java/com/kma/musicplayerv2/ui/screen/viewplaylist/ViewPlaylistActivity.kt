@@ -1,11 +1,20 @@
-package com.kma.musicplayerv2.ui.screen.favouritesong
+package com.kma.musicplayerv2.ui.screen.viewplaylist
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.kma.musicplayerv2.R
-import com.kma.musicplayerv2.databinding.ActivityFavouriteSongBinding
+import com.kma.musicplayerv2.databinding.ActivityViewPlaylistBinding
+import com.kma.musicplayerv2.model.Playlist
 import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.ui.adapter.SongAdapter
@@ -22,40 +31,74 @@ import com.kma.musicplayerv2.utils.SongDownloader
 import java.io.Serializable
 import kotlin.random.Random
 
-class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
-
-    private lateinit var favouriteSongViewModel: FavouriteSongViewModel
-
+class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
+    private lateinit var viewPlaylistViewModel: ViewPlaylistViewModel
     private lateinit var songAdapter: SongAdapter
 
-    override fun getContentView(): Int = R.layout.activity_favourite_song
+    private lateinit var playlist: Playlist
+
+    override fun getContentView(): Int = R.layout.activity_view_playlist
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        favouriteSongViewModel = ViewModelProvider(this)[FavouriteSongViewModel::class.java]
-        favouriteSongViewModel.fetchFavouriteSongs(this, onSuccessful = {
-            setupSongAdapter()
-        })
+        viewPlaylistViewModel = ViewModelProvider(this)[ViewPlaylistViewModel::class.java]
+        initView()
         setupListeners()
         setupObservers()
+
+        viewPlaylistViewModel.fetchSongsByPlaylist(this, playlist.id, onSuccessful = {
+            setupSongAdapter()
+        })
+    }
+
+    private fun initView() {
+        playlist = intent.getSerializableExtra(Constant.BUNDLE_PLAYLIST) as Playlist
+
+        binding.tvPlaylistName.text = playlist.name
+        binding.progressBar.visibility = View.VISIBLE
+        Glide.with(binding.root.context)
+            .load(playlist.image)
+            .listener(object : RequestListener<Drawable> {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    binding.progressBar.visibility = View.GONE
+                    return false
+                }
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d("CHECK_BUG", e.toString())
+                    return false
+                }
+            })
+            .into(binding.ivThumb)
     }
 
     private fun setupListeners() {
         binding.llSort.setOnClickListener {
             val bottomSheet = SortByBottomSheet(
-                sortBy = favouriteSongViewModel.sortBy.value!!,
+                sortBy = viewPlaylistViewModel.sortBy.value!!,
                 onSortBy = {
-                    favouriteSongViewModel.setSortBy(it)
+                    viewPlaylistViewModel.setSortBy(it)
                 }
             )
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
         binding.llFilter.setOnClickListener {
             val filterByArtistBottomSheet = FilterByArtistBottomSheet(
-                songs = favouriteSongViewModel.songs,
-                filterByArtists = favouriteSongViewModel.filterByArtists,
+                songs = viewPlaylistViewModel.songs,
+                filterByArtists = viewPlaylistViewModel.filterByArtists,
                 onClickApply = {
-                    favouriteSongViewModel.setFilterByArtists(it)
+                    viewPlaylistViewModel.setFilterByArtists(it)
                     songAdapter.notifyDataSetChanged()
                 }
             )
@@ -67,11 +110,11 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                 Bundle().apply {
                     putInt(
                         Constant.BUNDLE_START_FROM_INDEX,
-                        Random.nextInt(favouriteSongViewModel.tempSongs.size)
+                        Random.nextInt(viewPlaylistViewModel.tempSongs.size)
                     )
                     putSerializable(
                         Constant.BUNDLE_SONGS,
-                        favouriteSongViewModel.tempSongs as Serializable
+                        viewPlaylistViewModel.tempSongs as Serializable
                     )
                 },
             )
@@ -79,25 +122,51 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
     }
 
     private fun setupObservers() {
-        favouriteSongViewModel.sortBy.observe(this) {
+        viewPlaylistViewModel.sortBy.observe(this) {
             binding.tvSort.text = getString(it.textId)
-            favouriteSongViewModel.sortSongs()
+            viewPlaylistViewModel.sortSongs()
             songAdapter.notifyDataSetChanged()
         }
-        favouriteSongViewModel.totalSongs.observe(this) {
+        viewPlaylistViewModel.totalSongs.observe(this) {
             binding.tvTotalSong.text =
-                "${favouriteSongViewModel.tempSongs.size} ${getString(R.string.song)}"
+                "${viewPlaylistViewModel.tempSongs.size} ${getString(R.string.song)}"
         }
     }
 
     private fun setupSongAdapter() {
         songAdapter = SongAdapter(
-            songs = favouriteSongViewModel.tempSongs,
+            songs = viewPlaylistViewModel.tempSongs,
             onClickMore = { song ->
                 val bottomSheet = SongOptionBottomSheet(
                     song = song,
                     onClickShare = {
                         ShareUtils.shareSong(this, it)
+                    },
+                    onDeleteFromPlaylist = {
+                        PlaylistRepository.removeSongFromPlaylist(
+                            playlistId = playlist.id,
+                            songId = it.id,
+                            apiCallback = object : ApiCallback<Void> {
+                                override fun onSuccess(data: Void?) {
+                                    viewPlaylistViewModel.songs.remove(it)
+                                    viewPlaylistViewModel.tempSongs.remove(it)
+                                    songAdapter.notifyDataSetChanged()
+                                    Toast.makeText(
+                                        this@ViewPlaylistActivity,
+                                        getString(R.string.delete_successfully),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+                                override fun onFailure(message: String) {
+                                    Toast.makeText(
+                                        this@ViewPlaylistActivity,
+                                        getString(R.string.delete_failed),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        )
                     },
                     onClickDownload = {
                         SongDownloader.downloadSong(
@@ -123,7 +192,7 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                     },
                     onClickAddToFavorite = {
                         if (it.isFavourite) {
-                            favouriteSongViewModel.unFavouriteSong(
+                            viewPlaylistViewModel.unFavouriteSong(
                                 context = this,
                                 song = it,
                                 onUnFavouriteSuccess = {
@@ -131,52 +200,16 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                                     songAdapter.notifyDataSetChanged()
                                 }
                             )
+                        } else {
+                            viewPlaylistViewModel.addFavoriteSong(
+                                context = this,
+                                song = it,
+                                onAddFavoriteSuccess = {
+                                    it.isFavourite = true
+                                    songAdapter.notifyDataSetChanged()
+                                }
+                            )
                         }
-                    },
-                    onClickAddToPlaylist = {
-                        val addToPlaylistBottomSheet = AddToPlaylistBottomSheet(
-                            onClickPlaylist = { playlist ->
-                                // Add song to playlist
-                                PlaylistRepository.addSongToPlaylist(
-                                    songId = song.id,
-                                    playlistId = playlist.id,
-                                    apiCallback = object : ApiCallback<Boolean> {
-                                        override fun onSuccess(data: Boolean?) {
-                                            if (data == null) {
-                                                onFailure("Unknown error")
-                                                return
-                                            }
-                                            if (data) {
-                                                Toast.makeText(
-                                                    this@FavouriteSongActivity,
-                                                    "Thêm bài hát vào playlist thành công",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                playlist.totalSong++
-                                            } else {
-                                                Toast.makeText(
-                                                    this@FavouriteSongActivity,
-                                                    "Failed to add song to playlist",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-
-                                        override fun onFailure(message: String) {
-                                            Toast.makeText(
-                                                this@FavouriteSongActivity,
-                                                "Failed to add song to playlist: $message",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                )
-                            }
-                        )
-                        addToPlaylistBottomSheet.show(
-                            supportFragmentManager,
-                            addToPlaylistBottomSheet.tag
-                        )
                     },
                     onClickPlayNext = {
                         songService?.addSongToNextPlay(it)
@@ -187,7 +220,7 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                         ).show()
                     },
                     onClickHideSong = {
-                        favouriteSongViewModel.hideSong(
+                        viewPlaylistViewModel.hideSong(
                             context = this,
                             song = it,
                             onHideSuccess = {
@@ -199,7 +232,7 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                 bottomSheet.show(supportFragmentManager, bottomSheet.tag)
             },
             onClickUnFavourite = { song, position ->
-                favouriteSongViewModel.unFavouriteSong(
+                viewPlaylistViewModel.unFavouriteSong(
                     context = this,
                     song = song,
                     onUnFavouriteSuccess = {
@@ -215,26 +248,26 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                     Bundle().apply {
                         putInt(
                             Constant.BUNDLE_START_FROM_INDEX,
-                            favouriteSongViewModel.tempSongs.indexOf(it)
+                            viewPlaylistViewModel.tempSongs.indexOf(it)
                         )
                         putSerializable(
                             Constant.BUNDLE_SONGS,
-                            favouriteSongViewModel.tempSongs as Serializable
+                            viewPlaylistViewModel.tempSongs as Serializable
                         )
                     },
                 )
             }
         )
-        binding.rvFavouriteSong.apply {
+        binding.rvSong.apply {
             adapter = songAdapter
         }
-        binding.rvFavouriteSong.addItemDecoration(
+        binding.rvSong.addItemDecoration(
             VerticalSpaceItemDecoration(
                 this.resources.getDimension(
                     com.intuit.sdp.R.dimen._13sdp
                 ).toInt()
             )
         )
-        binding.rvFavouriteSong.layoutManager = LinearLayoutManager(this)
+        binding.rvSong.layoutManager = LinearLayoutManager(this)
     }
 }

@@ -3,6 +3,7 @@ package com.kma.musicplayerv2.network.retrofit.repository
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayer.network.retrofit.api.SongApi
 import com.kma.musicplayerv2.model.Artist
+import com.kma.musicplayerv2.model.Playlist
 import com.kma.musicplayerv2.model.Song
 import com.kma.musicplayerv2.model.SongComment
 import com.kma.musicplayerv2.network.common.ApiCallback
@@ -476,6 +477,66 @@ object SongRepository {
                 }
 
                 override fun onFailure(call: Call<SongCommentDto>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun getSongsByPlaylistId(playlistId: Long, apiCallback: ApiCallback<List<Song>>) {
+        apiCallback.onSuccess(
+            listOf(
+                Song(
+                    id = 5,
+                    title = "Chàng Trai Bất Tử",
+                    artist = Artist(
+                        id = 4,
+                        name = "An Vũ",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/6/5/6/e/656ed01c7604230fd6c9fc894dfa012d.jpg"
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/6/5/6/e/656ed01c7604230fd6c9fc894dfa012d.jpg",
+                    isFavourite = false
+                ),
+                Song(
+                    id = 7,
+                    title = "Cắt Đôi Nỗi Sầu",
+                    artist = Artist(
+                        id = 6,
+                        name = "Tăng Duy Tân",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg"
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
+                    isFavourite = false
+                ),
+                Song(
+                    id = 6,
+                    title = "Từng Là",
+                    artist = Artist(
+                        id = 5,
+                        name = "Vũ Cát Tường",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w360_r1x1_jpeg/avatars/d/8/7/3/d87392e24ee10b99988fcea608194751.jpg"
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w360_r1x1_jpeg/avatars/d/8/7/3/d87392e24ee10b99988fcea608194751.jpg",
+                    isFavourite = false
+                ),
+            )
+        )
+        return
+        songApi.getSongsByPlaylistId(playlistId).enqueue(
+            object : Callback<List<SongDto>> {
+                override fun onResponse(call: Call<List<SongDto>>, response: Response<List<SongDto>>) {
+                    val songs = response.body()?.map { it.toSong() }
+                    if (songs != null) {
+                        apiCallback.onSuccess(songs)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<SongDto>>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }

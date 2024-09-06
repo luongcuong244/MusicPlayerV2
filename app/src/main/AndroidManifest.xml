@@ -45,6 +45,9 @@
         <activity
             android:name=".ui.screen.playsong.PlaySongActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.screen.viewplaylist.ViewPlaylistActivity"
+            android:exported="false" />
 
         <service
             android:name=".service.PlaySongService"
@@ -67,13 +70,15 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".widgetprovider.MusicPlayerAppWidgetProvider"
+        <receiver
+            android:name=".widgetprovider.MusicPlayerAppWidgetProvider"
             android:exported="false"
             android:label="@string/now_playing">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/music_player_appwidget_info" />
         </receiver>
     </application>

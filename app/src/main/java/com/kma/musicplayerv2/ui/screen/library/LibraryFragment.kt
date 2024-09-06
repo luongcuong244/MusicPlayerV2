@@ -13,6 +13,8 @@ import com.kma.musicplayerv2.ui.adapter.PlaylistAdapter
 import com.kma.musicplayerv2.ui.customview.HorizontalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.screen.favouritesong.FavouriteSongActivity
+import com.kma.musicplayerv2.ui.screen.viewplaylist.ViewPlaylistActivity
+import com.kma.musicplayerv2.utils.Constant
 import com.kma.musicplayerv2.utils.FileUtils
 
 class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
@@ -89,7 +91,11 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         libraryViewModel.fetchPlaylists(requireActivity(), onSuccess = {
             playlistAdapter = PlaylistAdapter(
                 libraryViewModel.playlists,
-                { },
+                {
+                    showActivity(ViewPlaylistActivity::class.java, Bundle().apply {
+                        putSerializable(Constant.BUNDLE_PLAYLIST, it)
+                    })
+                },
                 {}
             )
             binding.rvYourPlaylist.adapter = playlistAdapter

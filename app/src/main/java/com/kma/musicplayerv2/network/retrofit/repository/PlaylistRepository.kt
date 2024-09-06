@@ -5,6 +5,7 @@ import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayerv2.network.retrofit.api.PlaylistApi
 import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistRequest
+import com.kma.musicplayerv2.network.retrofit.model.DeleteSongToPlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.PlaylistDto
 import retrofit2.Call
 import retrofit2.Callback
@@ -72,6 +73,26 @@ object PlaylistRepository {
                 }
 
                 override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun removeSongFromPlaylist(songId: Long, playlistId: Long, apiCallback: ApiCallback<Void>) {
+        apiCallback.onSuccess(null)
+        return
+        playlistApi.removeSongFromPlaylist(DeleteSongToPlaylistRequest(songId, playlistId)).enqueue(
+            object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        apiCallback.onSuccess(null)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }

@@ -1,4 +1,4 @@
-package com.kma.musicplayerv2.ui.screen.favouritesong
+package com.kma.musicplayerv2.ui.screen.viewplaylist
 
 import android.content.Context
 import android.widget.Toast
@@ -11,7 +11,7 @@ import com.kma.musicplayerv2.model.SortType
 import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
 
-class FavouriteSongViewModel : ViewModel() {
+class ViewPlaylistViewModel : ViewModel() {
     val songs = mutableListOf<Song>()
     val tempSongs = mutableListOf<Song>()
     val filterByArtists = mutableListOf<Artist>()
@@ -22,8 +22,9 @@ class FavouriteSongViewModel : ViewModel() {
     private val _sortBy = MutableLiveData(SortType.NEWEST)
     val sortBy: LiveData<SortType> = _sortBy
 
-    fun fetchFavouriteSongs(context: Context, onSuccessful: () -> Unit) {
-        SongRepository.getFavouriteSongs(
+    fun fetchSongsByPlaylist(context: Context, playlistId: Long, onSuccessful: () -> Unit) {
+        SongRepository.getSongsByPlaylistId(
+            playlistId,
             object : ApiCallback<List<Song>> {
                 override fun onSuccess(data: List<Song>?) {
                     if (data == null) {
@@ -79,16 +80,32 @@ class FavouriteSongViewModel : ViewModel() {
             song,
             object : ApiCallback<Void> {
                 override fun onSuccess(data: Void?) {
-                    songs.remove(song)
-                    tempSongs.remove(song)
                     onUnFavouriteSuccess()
-                    _totalSongs.value = tempSongs.size
                 }
 
                 override fun onFailure(message: String) {
                     Toast.makeText(
                         context,
                         "Failed to unfavourite song: $message",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+    }
+
+    fun addFavoriteSong(context: Context, song: Song, onAddFavoriteSuccess: () -> Unit) {
+        SongRepository.addFavouriteSong(
+            song,
+            object : ApiCallback<Void> {
+                override fun onSuccess(data: Void?) {
+                    onAddFavoriteSuccess()
+                }
+
+                override fun onFailure(message: String) {
+                    Toast.makeText(
+                        context,
+                        "Failed to add favourite song: $message",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

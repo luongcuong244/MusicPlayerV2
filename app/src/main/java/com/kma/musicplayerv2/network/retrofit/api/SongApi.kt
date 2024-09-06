@@ -35,4 +35,7 @@ interface SongApi {
 
     @POST("app/add-comment")
     fun addComment(@Body request: AddCommentRequest): Call<SongCommentDto>
+
+    @GET
+    fun getSongsByPlaylistId(playlistId: Long): Call<List<SongDto>>
 }

@@ -18,6 +18,7 @@ import com.kma.musicplayerv2.model.Song
 class SongOptionBottomSheet(
     private val song: Song,
     private val onClickShare: ((Song) -> Unit)? = null,
+    private val onDeleteFromPlaylist: ((Song) -> Unit)? = null,
     private val onClickDownload: ((Song) -> Unit)? = null,
     private val onClickAddToFavorite: ((Song) -> Unit)? = null,
     private val onClickAddToPlaylist: ((Song) -> Unit)? = null,
@@ -39,6 +40,9 @@ class SongOptionBottomSheet(
     private fun initView() {
         if (onClickShare == null) {
             binding.ivShare.visibility = View.GONE
+        }
+        if (onDeleteFromPlaylist == null) {
+            binding.llDeleteFromPlaylist.visibility = View.GONE
         }
         if (onClickDownload == null) {
             binding.llDownload.visibility = View.GONE
@@ -96,6 +100,10 @@ class SongOptionBottomSheet(
     private fun setupListeners() {
         binding.ivShare.setOnClickListener {
             onClickShare?.invoke(song)
+            dismiss()
+        }
+        binding.llDeleteFromPlaylist.setOnClickListener {
+            onDeleteFromPlaylist?.invoke(song)
             dismiss()
         }
         binding.llDownload.setOnClickListener {

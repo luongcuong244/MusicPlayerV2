@@ -1,6 +1,7 @@
 package com.kma.musicplayerv2.network.retrofit.api
 
 import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistRequest
+import com.kma.musicplayerv2.network.retrofit.model.DeleteSongToPlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.PlaylistDto
 import retrofit2.Call
 import retrofit2.http.Body
@@ -16,4 +17,7 @@ interface PlaylistApi {
 
     @POST("app/add-song-to-playlist")
     fun addSongToPlaylist(@Body request: AddSongToPlaylistRequest): Call<Boolean>
+
+    @POST()
+    fun removeSongFromPlaylist(@Body request: DeleteSongToPlaylistRequest): Call<Void>
 }

@@ -284,6 +284,10 @@ class PlaySongService : Service() {
         currentIndex = index
     }
 
+    fun addSongToNextPlay(song: Song) {
+        songs.add(currentIndex + 1, song)
+    }
+
     fun setSleepTimerModel(model: SleepTimerModel?, timeInMillis: Long) {
         sleepTimerModel.value = model
         // if model is null, cancel the sleep timer

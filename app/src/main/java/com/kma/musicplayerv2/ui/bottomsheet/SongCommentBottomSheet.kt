@@ -59,6 +59,10 @@ class SongCommentBottomSheet(
             }
         )
 
+        binding.ivClose.setOnClickListener {
+            dismiss()
+        }
+
         binding.ivSend.setOnClickListener {
             val text = binding.etComment.text.toString()
             if (text.isEmpty()) {
