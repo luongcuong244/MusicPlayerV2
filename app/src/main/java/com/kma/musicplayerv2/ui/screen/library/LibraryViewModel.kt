@@ -11,6 +11,7 @@ import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
 
 class LibraryViewModel : ViewModel() {
     val playlists = mutableListOf<Playlist>()
+    val recentlyPlaylists = mutableListOf<Playlist>()
 
     fun fetchPlaylists(
         context: Context,
@@ -25,6 +26,29 @@ class LibraryViewModel : ViewModel() {
                     }
                     playlists.clear()
                     playlists.addAll(data)
+                    onSuccess()
+                }
+
+                override fun onFailure(message: String) {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
+
+    fun fetchRecentlyPlaylist(
+        context: Context,
+        onSuccess: () -> Unit,
+    ) {
+        PlaylistRepository.getRecentlyPlaylist(
+            object : ApiCallback<List<Playlist>> {
+                override fun onSuccess(data: List<Playlist>?) {
+                    if (data == null) {
+                        onFailure("Data is null")
+                        return
+                    }
+                    recentlyPlaylists.clear()
+                    recentlyPlaylists.addAll(data)
                     onSuccess()
                 }
 

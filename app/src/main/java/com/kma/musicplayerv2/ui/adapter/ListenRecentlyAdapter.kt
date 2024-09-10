@@ -14,11 +14,11 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.ItemListenRecentlyBinding
-import com.kma.musicplayerv2.model.ListenRecently
+import com.kma.musicplayerv2.model.Playlist
 
 class ListenRecentlyAdapter(
-    private val list: List<ListenRecently>,
-    private val onClickItem: (ListenRecently) -> Unit,
+    private val list: List<Playlist>,
+    private val onClickItem: (Playlist) -> Unit,
     private val onClickViewAll: () -> Unit
 ) : RecyclerView.Adapter<ListenRecentlyAdapter.ListenRecentlyViewHolder>() {
 
@@ -45,7 +45,7 @@ class ListenRecentlyAdapter(
 
     inner class ListenRecentlyViewHolder(val binding: ItemListenRecentlyBinding) :
         ViewHolder(binding.root) {
-        fun bindItem(listenRecently: ListenRecently) {
+        fun bindItem(listenRecently: Playlist) {
             binding.llViewAll.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
             Glide.with(binding.root.context)
@@ -74,6 +74,10 @@ class ListenRecentlyAdapter(
                 })
                 .into(binding.ivThumb)
             binding.tvTitle.text = listenRecently.name
+
+            binding.llItem.setOnClickListener {
+                onClickItem(listenRecently)
+            }
         }
 
         fun bindViewAll(isFirst: Boolean) {

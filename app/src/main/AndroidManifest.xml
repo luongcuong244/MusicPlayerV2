@@ -48,6 +48,9 @@
         <activity
             android:name=".ui.screen.viewplaylist.ViewPlaylistActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.screen.listenrecently.ListenRecentlyActivity"
+            android:exported="false" />
 
         <service
             android:name=".service.PlaySongService"

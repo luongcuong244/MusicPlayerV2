@@ -20,4 +20,7 @@ interface PlaylistApi {
 
     @POST()
     fun removeSongFromPlaylist(@Body request: DeleteSongToPlaylistRequest): Call<Void>
+
+    @POST("get-recently-playlist")
+    fun getRecentlyPlaylist(): Call<List<PlaylistDto>>
 }

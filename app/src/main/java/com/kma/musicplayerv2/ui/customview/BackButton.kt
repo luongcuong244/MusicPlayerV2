@@ -22,7 +22,7 @@ class BackButton : AppCompatImageView {
     private fun init() {
         setImageResource(R.drawable.ic_arrow_left_back)
         setOnClickListener {
-            (context.findActivity())?.onBackPressed()
+            (context.findActivity())?.finish()
         }
     }
 }

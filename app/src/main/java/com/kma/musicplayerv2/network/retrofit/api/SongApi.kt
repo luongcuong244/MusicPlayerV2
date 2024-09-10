@@ -1,4 +1,4 @@
-package com.kma.musicplayer.network.retrofit.api
+package com.kma.musicplayerv2.network.retrofit.api
 
 import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
 import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
@@ -38,4 +38,7 @@ interface SongApi {
 
     @GET
     fun getSongsByPlaylistId(playlistId: Long): Call<List<SongDto>>
+
+    @GET
+    fun getRecentlySongs(): Call<List<SongDto>>
 }

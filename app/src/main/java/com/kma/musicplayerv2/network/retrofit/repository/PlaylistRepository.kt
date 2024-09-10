@@ -98,4 +98,49 @@ object PlaylistRepository {
             }
         )
     }
+
+    fun getRecentlyPlaylist(apiCallback: ApiCallback<List<Playlist>>) {
+        apiCallback.onSuccess(
+            listOf(
+                Playlist(
+                    id = 1,
+                    totalSong = 10,
+                    name = "#123",
+                    image = "https://images.pexels.com/photos/4162581/pexels-photo-4162581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                ),
+                Playlist(
+                    id = 1,
+                    totalSong = 15,
+                    name = "999999",
+                    image = "https://images.pexels.com/photos/5699509/pexels-photo-5699509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                ),
+                Playlist(
+                    id = 1,
+                    totalSong = 20,
+                    name = "FGDSD",
+                    image = "https://images.pexels.com/photos/5965930/pexels-photo-5965930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                ),
+            )
+        )
+        return
+        playlistApi.getRecentlyPlaylist().enqueue(
+            object : Callback<List<PlaylistDto>> {
+                override fun onResponse(
+                    call: Call<List<PlaylistDto>>,
+                    response: Response<List<PlaylistDto>>
+                ) {
+                    val playlists = response.body()?.map { it.toPlaylist() }
+                    if (playlists != null) {
+                        apiCallback.onSuccess(playlists)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<PlaylistDto>>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
 }

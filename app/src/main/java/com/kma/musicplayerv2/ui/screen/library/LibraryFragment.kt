@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kma.musicplayerv2.ui.core.BaseFragment
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.FragmentLibraryBinding
-import com.kma.musicplayerv2.model.ListenRecently
 import com.kma.musicplayerv2.ui.adapter.ListenRecentlyAdapter
 import com.kma.musicplayerv2.ui.adapter.PlaylistAdapter
 import com.kma.musicplayerv2.ui.customview.HorizontalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.screen.favouritesong.FavouriteSongActivity
+import com.kma.musicplayerv2.ui.screen.listenrecently.ListenRecentlyActivity
 import com.kma.musicplayerv2.ui.screen.viewplaylist.ViewPlaylistActivity
 import com.kma.musicplayerv2.utils.Constant
 import com.kma.musicplayerv2.utils.FileUtils
@@ -51,40 +51,29 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     }
 
     private fun setupListenRecentlyAdapter() {
-        listenRecentlyAdapter = ListenRecentlyAdapter(
-            listOf(
-                ListenRecently(
-                    id = 1,
-                    type = ListenRecently.Type.PLAYLIST,
-                    name = "Playlist 1",
-                    image = "https://images.pexels.com/photos/4162581/pexels-photo-4162581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                ),
-                ListenRecently(
-                    id = 1,
-                    type = ListenRecently.Type.PLAYLIST,
-                    name = "#Playlist 2",
-                    image = "https://images.pexels.com/photos/5699509/pexels-photo-5699509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                ),
-                ListenRecently(
-                    id = 1,
-                    type = ListenRecently.Type.PLAYLIST,
-                    name = "Hay nghe",
-                    image = "https://images.pexels.com/photos/5965930/pexels-photo-5965930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                ),
-            ),
-            { },
-            { }
-        )
-        binding.rvListenRecently.adapter = listenRecentlyAdapter
-        binding.rvListenRecently.addItemDecoration(
-            HorizontalSpaceItemDecoration(
-                requireActivity().resources.getDimension(
-                    com.intuit.sdp.R.dimen._13sdp
-                ).toInt()
+        libraryViewModel.fetchRecentlyPlaylist(requireActivity()) {
+            listenRecentlyAdapter = ListenRecentlyAdapter(
+                libraryViewModel.recentlyPlaylists,
+                {
+                    showActivity(ViewPlaylistActivity::class.java, Bundle().apply {
+                        putSerializable(Constant.BUNDLE_PLAYLIST, it)
+                    })
+                },
+                {
+                    showActivity(ListenRecentlyActivity::class.java)
+                }
             )
-        )
-        binding.rvListenRecently.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.rvListenRecently.adapter = listenRecentlyAdapter
+            binding.rvListenRecently.addItemDecoration(
+                HorizontalSpaceItemDecoration(
+                    requireActivity().resources.getDimension(
+                        com.intuit.sdp.R.dimen._13sdp
+                    ).toInt()
+                )
+            )
+            binding.rvListenRecently.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
     private fun setupPlaylistAdapter() {
