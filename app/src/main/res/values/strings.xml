@@ -72,4 +72,6 @@
     <string name="listen_recently">Nghe gần đây</string>
     <string name="song_cap">Bài hát</string>
     <string name="playlist">Playlist</string>
+    <string name="enter_playlist_name">Nhập tên playlist</string>
+    <string name="please_enter_playlist_name">Vui lòng nhập tên playlist</string>
 </resources>

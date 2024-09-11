@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/exploreFragment"
-        android:name="com.kma.musicplayerv2.ui.screen.listenplaylistrecently.ListenPlaylistRecentlyFragment"
+        android:name="com.kma.musicplayerv2.ui.screen.explore.ExploreFragment"
         android:label="ExploreFragment"
         tools:layout="@layout/fragment_explore" />
 

@@ -11,6 +11,7 @@ import com.kma.musicplayerv2.ui.adapter.ListenRecentlyAdapter
 import com.kma.musicplayerv2.ui.adapter.PlaylistAdapter
 import com.kma.musicplayerv2.ui.customview.HorizontalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
+import com.kma.musicplayerv2.ui.dialog.CreatePlaylistDialog
 import com.kma.musicplayerv2.ui.screen.favouritesong.FavouriteSongActivity
 import com.kma.musicplayerv2.ui.screen.listenrecently.ListenRecentlyActivity
 import com.kma.musicplayerv2.ui.screen.viewplaylist.ViewPlaylistActivity
@@ -38,7 +39,8 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         libraryViewModel.fetchTotalOfFavoriteSongs(requireActivity()) {
             binding.tvFavouriteCount.text = it.toString()
         }
-        binding.tvDownloadedCount.text = FileUtils.getDownloadedSongs(requireActivity()).size.toString()
+        binding.tvDownloadedCount.text =
+            FileUtils.getDownloadedSongs(requireActivity()).size.toString()
         libraryViewModel.fetchUploadSongs(requireActivity()) {
             binding.tvUploadCount.text = it.size.toString()
         }
@@ -85,7 +87,18 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
                         putSerializable(Constant.BUNDLE_PLAYLIST, it)
                     })
                 },
-                {}
+                {
+                    val createPlaylistDialog = CreatePlaylistDialog(
+                        onPlaylistCreated = {
+                            libraryViewModel.playlists.add(0, it)
+                            playlistAdapter.notifyDataSetChanged()
+                        }
+                    )
+                    createPlaylistDialog.show(
+                        requireActivity().supportFragmentManager,
+                        createPlaylistDialog.tag
+                    )
+                }
             )
             binding.rvYourPlaylist.adapter = playlistAdapter
             binding.rvYourPlaylist.addItemDecoration(

@@ -143,4 +143,32 @@ object PlaylistRepository {
             }
         )
     }
+
+    fun createPlaylist(name: String, apiCallback: ApiCallback<Playlist>) {
+        apiCallback.onSuccess(
+            Playlist(
+                id = 1,
+                totalSong = 0,
+                name = name,
+                image = "https://images.pexels.com/photos/4162581/pexels-photo-4162581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            )
+        )
+        return
+        playlistApi.createPlaylist(name).enqueue(
+            object : Callback<PlaylistDto> {
+                override fun onResponse(call: Call<PlaylistDto>, response: Response<PlaylistDto>) {
+                    val playlist = response.body()?.toPlaylist()
+                    if (playlist != null) {
+                        apiCallback.onSuccess(playlist)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<PlaylistDto>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
 }

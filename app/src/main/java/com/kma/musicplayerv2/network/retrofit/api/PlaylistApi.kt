@@ -13,7 +13,7 @@ interface PlaylistApi {
     fun getAllPlaylists(): Call<List<PlaylistDto>>
 
     @POST("app/create-playlist")
-    fun createPlaylist(): Call<PlaylistDto>
+    fun createPlaylist(playlistName: String): Call<PlaylistDto>
 
     @POST("app/add-song-to-playlist")
     fun addSongToPlaylist(@Body request: AddSongToPlaylistRequest): Call<Boolean>
