@@ -73,7 +73,7 @@ public class SystemUtil {
             lang = Resources.getSystem().getConfiguration().locale.getLanguage();
         }
         if (!getLanguageApp(mContext).contains(lang)) {
-            return preferences.getString("KEY_LANGUAGE", "en");
+            return preferences.getString("KEY_LANGUAGE", "vi");
         } else {
             return preferences.getString("KEY_LANGUAGE", lang);
         }
@@ -88,21 +88,11 @@ public class SystemUtil {
         }
     }
 
-    public static void increaseCountChooseLanguage(Context context){
-        SharedPreferences preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("count_choose", preferences.getInt("count_choose", 0)+1);
-        editor.commit();
-    }
-    public static int getCountChooseLanguage(Context context){
-        SharedPreferences preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE);
-        return preferences.getInt("count_choose", 0);
-    }
-
     public static List<String> getLanguageApp(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE);
         boolean openLanguage = sharedPreferences.getBoolean("openLanguage", false);
         List<String> languages = new ArrayList<>();
+        languages.add("vi");
         languages.add("en");
         languages.add("hi");
         languages.add("es");

@@ -24,8 +24,14 @@ interface SongApi {
     @POST("app/remove-favourite-song")
     fun removeFavouriteSong(songId: Long): Call<Void>
 
+    @GET("app/get-hidden-songs")
+    fun getHiddenSongs(): Call<List<SongDto>>
+
     @POST("app/hide-song")
     fun hideSong(songId: Long): Call<Void>
+
+    @POST("app/unhide-song")
+    fun unhideSongs(songIds: List<Long>): Call<Boolean>
 
     @GET
     fun getSongsById(songIds: List<Long>): Call<List<SongDto>>

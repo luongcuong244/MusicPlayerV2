@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#172135"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/_20sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_13sdp">
+
+            <com.kma.musicplayerv2.ui.customview.BackButton
+                android:id="@+id/back_button"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_centerVertical="true" />
+
+            <com.kma.musicplayerv2.ui.customview.MovableText
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/hidden_song"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp" />
+
+            <ImageView
+                android:id="@+id/iv_select_all"
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_select_all_disable" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_13sdp"
+            android:layout_marginTop="@dimen/_13sdp"
+            app:cardBackgroundColor="#38445A"
+            app:cardCornerRadius="@dimen/_100sdp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_13sdp"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <ImageView
+                    android:id="@+id/iv_search"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/nunito_regular"
+                    android:hint="@string/search"
+                    android:textColor="@color/white"
+                    android:textColorHint="#9EA1A8"
+                    android:textSize="@dimen/_13ssp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/_13sdp"
+            android:layout_marginVertical="@dimen/_13sdp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_songs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <TextView
+                android:id="@+id/tv_no_songs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/nunito_medium"
+                android:text="@string/no_song_found"
+                android:textColor="@color/color_D2D3D5"
+                android:textSize="@dimen/_12ssp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_unhide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_13sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:background="@drawable/bg_purple_gradient"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_10sdp">
+
+            <com.kma.musicplayerv2.ui.customview.MovableText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/unhide"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

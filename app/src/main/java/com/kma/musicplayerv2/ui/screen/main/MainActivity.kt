@@ -1,5 +1,6 @@
 package com.kma.musicplayerv2.ui.screen.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -88,5 +89,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
         val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
         currentFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
+        currentFragment?.onActivityResult(requestCode, resultCode, data)
     }
 }

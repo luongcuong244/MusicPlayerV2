@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -50,6 +51,18 @@
             android:exported="false" />
         <activity
             android:name=".ui.screen.listenrecently.ListenRecentlyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.screen.policy.PolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.screen.addwidget.AddWidgetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.screen.language.LanguageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.screen.hiddensong.HiddenSongActivity"
             android:exported="false" />
 
         <service

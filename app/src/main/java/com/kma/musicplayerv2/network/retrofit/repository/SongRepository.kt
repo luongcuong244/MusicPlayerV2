@@ -252,6 +252,66 @@ object SongRepository {
         )
     }
 
+    fun getHiddenSongs(apiCallback: ApiCallback<List<Song>>) {
+        apiCallback.onSuccess(
+            listOf(
+                Song(
+                    id = 1,
+                    title = "Hoa Nở Bên Đường",
+                    artist = Artist(
+                        id = 1,
+                        name = "Quang Đăng Trần",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
+                    isFavourite = true
+                ),
+                Song(
+                    id = 2,
+                    title = "Không Trọn Vẹn Nữa",
+                    artist = Artist(
+                        id = 2,
+                        name = "Hồ Quang Hiếu",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/9/5/8/b9585640f130b885953eb5a8355697a9.jpg"
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/9/5/8/b9585640f130b885953eb5a8355697a9.jpg",
+                    isFavourite = true
+                ),
+                Song(
+                    id = 1,
+                    title = "Hoa Nở Bên Đường",
+                    artist = Artist(
+                        id = 1,
+                        name = "Quang Đăng Trần",
+                        image = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg"
+                    ),
+                    path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+                    thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
+                    isFavourite = true
+                ),
+            )
+        )
+        return
+        songApi.getHiddenSongs().enqueue(
+            object : Callback<List<SongDto>> {
+                override fun onResponse(call: Call<List<SongDto>>, response: Response<List<SongDto>>) {
+                    val songs = response.body()?.map { it.toSong() }
+                    if (songs != null) {
+                        apiCallback.onSuccess(songs)
+                    } else {
+                        apiCallback.onFailure("Unknown error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<SongDto>>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
     fun hideSong(song: Song, apiCallback: ApiCallback<Void>) {
         apiCallback.onSuccess(null)
         return
@@ -262,6 +322,22 @@ object SongRepository {
                 }
 
                 override fun onFailure(call: Call<Void>, t: Throwable) {
+                    apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun unhideSongs(song: List<Song>, apiCallback: ApiCallback<Boolean>) {
+        apiCallback.onSuccess(true)
+        return
+        songApi.unhideSongs(song.map { it.id }).enqueue(
+            object : Callback<Boolean> {
+                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                    apiCallback.onSuccess(null)
+                }
+
+                override fun onFailure(call: Call<Boolean>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }
