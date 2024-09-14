@@ -2,7 +2,9 @@ package com.kma.musicplayerv2.network.retrofit
 
 import com.google.gson.GsonBuilder
 import com.kma.musicplayerv2.network.common.ServerAddress
+import com.kma.musicplayerv2.utils.SharePrefUtils
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,6 +22,8 @@ class RetrofitClient {
         }
 
         private fun createClient() {
+            val httpClient = setupOkHttpClient()
+
             val gson = GsonBuilder()
                 .setLenient()
                 .create()
@@ -27,8 +31,27 @@ class RetrofitClient {
             retrofit = Retrofit.Builder()
                 .baseUrl(ServerAddress.SERVER_ADDRESS)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(OkHttpClient.Builder().build())
+                .client(httpClient)
                 .build()
+        }
+
+        private fun setupOkHttpClient() : OkHttpClient {
+            val httpClient = OkHttpClient.Builder()
+
+            httpClient.addInterceptor { chain ->
+                val originalRequest: Request = chain.request()
+
+                val accessToken = SharePrefUtils.getAccessToken()
+
+                val builder: Request.Builder = originalRequest.newBuilder().header(
+                    "Authorization",
+                    "Bearer $accessToken"
+                )
+                val newRequest: Request = builder.build()
+                chain.proceed(newRequest)
+            }
+
+            return httpClient.build()
         }
     }
 }

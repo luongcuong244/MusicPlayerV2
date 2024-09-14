@@ -35,4 +35,14 @@ object SharePrefUtils {
     fun getCurrentSongIndex(): Int {
         return mSharePref!!.getInt("currentSongIndex", -1)
     }
+
+    fun saveAccessToken(accessToken: String): Boolean {
+        val editor = mSharePref!!.edit()
+        editor.putString("accessToken", accessToken)
+        return editor.commit()
+    }
+
+    fun getAccessToken(): String? {
+        return mSharePref!!.getString("accessToken", null)
+    }
 }
