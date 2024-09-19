@@ -24,8 +24,8 @@ import java.io.IOException
 
 object FileUtils {
     const val APP_FOLDER_NAME = "MusicPlayerV2"
-
-    private val localSongs = mutableListOf<Song>()
+    const val CACHE_FOLDER_NAME = "SongCache"
+    const val PRECACHED_FOLDER_NAME = "SongPrecache"
 
     private fun getMediaDurationInSeconds(context: Context, path: String): Long {
         try {
@@ -59,13 +59,19 @@ object FileUtils {
         )
     }
 
+    fun isSongDownloaded(context: Context, song: Song): Boolean {
+        val directoryPath = getAppCacheDir(context)
+        val fileName = generateFileName(song)
+        val file = File(directoryPath, fileName)
+        return file.exists()
+    }
+
     fun generateFileName(song: Song): String {
         return song.title + "-" + song.id + ".mp3"
     }
 
     fun getDownloadedSongs(context: Context): List<File> {
-        val directoryPath = getDirectoryPath(context) ?: return emptyList()
-        val directory = File(directoryPath)
+        val directory = getAppCacheDir(context)
         if (!directory.exists()) {
             return emptyList()
         }
@@ -86,7 +92,7 @@ object FileUtils {
         onDownloadFailed: () -> Unit,
     ) {
         try {
-            val file = File(context.cacheDir, fileName)
+            val file = File(getAppCacheDir(context), fileName)
             if (file.exists()) {
                 onDownloadSuccess.invoke(file)
                 return
@@ -132,6 +138,14 @@ object FileUtils {
             e.printStackTrace()
             onDownloadFailed.invoke()
         }
+    }
+
+    private fun getAppCacheDir(context: Context): File {
+        val directory = File(context.cacheDir, CACHE_FOLDER_NAME)
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        return directory
     }
 
     fun getUriFromFile(context: Context, file: File): Uri {

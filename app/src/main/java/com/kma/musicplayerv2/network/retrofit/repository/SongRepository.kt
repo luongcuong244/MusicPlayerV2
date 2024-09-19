@@ -1,5 +1,6 @@
 package com.kma.musicplayerv2.network.retrofit.repository
 
+import android.content.Context
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayerv2.network.retrofit.api.SongApi
 import com.kma.musicplayerv2.model.Artist
@@ -9,6 +10,7 @@ import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
 import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
 import com.kma.musicplayerv2.network.retrofit.model.SongDto
+import com.kma.musicplayerv2.utils.FileUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +37,7 @@ object SongRepository {
         )
     }
 
-    fun getFavouriteSongs(apiCallback: ApiCallback<List<Song>>) {
+    fun getFavouriteSongs(context: Context, apiCallback: ApiCallback<List<Song>>) {
         apiCallback.onSuccess(
             listOf(
                 Song(
@@ -48,8 +50,10 @@ object SongRepository {
                     ),
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
-                    isFavourite = true
-                ),
+                    isFavourite = true,
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 2,
                     title = "Không Trọn Vẹn Nữa",
@@ -61,7 +65,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/9/5/8/b9585640f130b885953eb5a8355697a9.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 1,
                     title = "Hoa Nở Bên Đường",
@@ -73,7 +79,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 1,
                     title = "Hoa Nở Bên Đường",
@@ -85,7 +93,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/f/d/9/ffd9b78fae7fa10bde459b331fe382f6.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 3,
                     title = "Như Anh Đã Thấy Em",
@@ -97,7 +107,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/0/f/b/3/0fb3ab6b2dd74fa6b7741ece6d47c29d.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 4,
                     title = "Ngày Mai Người Ta Lấy Chồng",
@@ -109,7 +121,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w360_r1x1_jpeg/avatars/a/7/e/c/a7ecb2ffdd31e10861988998ed91c106.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 5,
                     title = "Chàng Trai Bất Tử",
@@ -121,7 +135,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/6/5/6/e/656ed01c7604230fd6c9fc894dfa012d.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 6,
                     title = "Từng Là",
@@ -133,7 +149,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w360_r1x1_jpeg/avatars/d/8/7/3/d87392e24ee10b99988fcea608194751.jpg",
                     isFavourite = true
-                ),
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                },
                 Song(
                     id = 7,
                     title = "Cắt Đôi Nỗi Sầu",
@@ -145,7 +163,9 @@ object SongRepository {
                     path = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
                     thumbnail = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
                     isFavourite = true
-                )
+                ).apply {
+                    isDownloaded = FileUtils.isSongDownloaded(context, this)
+                }
             ),
         )
         return
