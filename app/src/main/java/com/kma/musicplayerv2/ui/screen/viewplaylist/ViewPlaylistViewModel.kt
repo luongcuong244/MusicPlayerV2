@@ -22,7 +22,7 @@ class ViewPlaylistViewModel : ViewModel() {
     private val _sortBy = MutableLiveData(SortType.NEWEST)
     val sortBy: LiveData<SortType> = _sortBy
 
-    fun fetchSongsByPlaylist(context: Context, playlistId: Long, onSuccessful: () -> Unit) {
+    fun fetchSongsByPlaylist(context: Context, playlistId: String, onSuccessful: () -> Unit) {
         SongRepository.getSongsByPlaylistId(
             playlistId,
             object : ApiCallback<List<Song>> {

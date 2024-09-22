@@ -322,7 +322,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                                     "Thêm bài hát vào playlist thành công",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                playlist.totalSong++
+                                playlist.songs.add(song)
                             } else {
                                 Toast.makeText(
                                     this@PlaySongActivity,

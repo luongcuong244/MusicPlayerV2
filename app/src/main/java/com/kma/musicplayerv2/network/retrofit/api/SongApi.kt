@@ -43,7 +43,7 @@ interface SongApi {
     fun addComment(@Body request: AddCommentRequest): Call<SongCommentDto>
 
     @GET
-    fun getSongsByPlaylistId(playlistId: Long): Call<List<SongDto>>
+    fun getSongsByPlaylistId(playlistId: String): Call<List<SongDto>>
 
     @GET
     fun getRecentlySongs(): Call<List<SongDto>>

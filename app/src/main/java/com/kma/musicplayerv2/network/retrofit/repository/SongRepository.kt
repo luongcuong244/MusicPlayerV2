@@ -557,7 +557,7 @@ object SongRepository {
         )
     }
 
-    fun getSongsByPlaylistId(playlistId: Long, apiCallback: ApiCallback<List<Song>>) {
+    fun getSongsByPlaylistId(playlistId: String, apiCallback: ApiCallback<List<Song>>) {
         apiCallback.onSuccess(
             listOf(
                 Song(

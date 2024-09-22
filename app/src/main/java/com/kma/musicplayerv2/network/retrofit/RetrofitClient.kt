@@ -1,5 +1,6 @@
 package com.kma.musicplayerv2.network.retrofit
 
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.kma.musicplayerv2.network.common.ServerAddress
 import com.kma.musicplayerv2.utils.SharePrefUtils
@@ -42,6 +43,8 @@ class RetrofitClient {
                 val originalRequest: Request = chain.request()
 
                 val accessToken = SharePrefUtils.getAccessToken()
+
+                Log.d("RetrofitClient", "accessToken: $accessToken")
 
                 val builder: Request.Builder = originalRequest.newBuilder().header(
                     "Authorization",

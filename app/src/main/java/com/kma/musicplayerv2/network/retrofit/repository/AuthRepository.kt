@@ -7,13 +7,9 @@ import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayerv2.network.retrofit.api.AuthApi
 import retrofit2.Callback
 
-class AuthRepository {
+object AuthRepository {
 
     private val authApi: AuthApi = RetrofitClient.getClient().create(AuthApi::class.java)
-
-    fun checkExistingUser(email: String, callback: Callback<Boolean>) {
-        authApi.checkExistingUser(email).enqueue(callback)
-    }
 
     fun login(loginRequest: LoginRequest, callback: Callback<LoginResponse>) {
         authApi.login(loginRequest).enqueue(callback)
