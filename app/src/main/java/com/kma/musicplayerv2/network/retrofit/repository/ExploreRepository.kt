@@ -1,21 +1,16 @@
 package com.kma.musicplayerv2.network.retrofit.repository
 
-import com.kma.musicplayerv2.network.retrofit.model.LoginRequest
-import com.kma.musicplayerv2.network.retrofit.model.LoginResponse
-import com.kma.musicplayerv2.network.retrofit.model.RegisterRequest
+import com.kma.musicplayerv2.globalstate.CurrentUser
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
-import com.kma.musicplayerv2.network.retrofit.api.AuthApi
+import com.kma.musicplayerv2.network.retrofit.api.ExploreApi
+import com.kma.musicplayerv2.network.retrofit.model.ExploreResponse
 import retrofit2.Callback
 
-object AuthRepository {
+object ExploreRepository {
 
-    private val authApi: AuthApi = RetrofitClient.getClient().create(AuthApi::class.java)
+    private val exploreApi: ExploreApi = RetrofitClient.getClient().create(ExploreApi::class.java)
 
-    fun login(loginRequest: LoginRequest, callback: Callback<LoginResponse>) {
-        authApi.login(loginRequest).enqueue(callback)
-    }
-
-    fun register(registerRequest: RegisterRequest, callback: Callback<Boolean>) {
-        authApi.register(registerRequest).enqueue(callback)
+    fun fetchExplore(callback: Callback<ExploreResponse>) {
+        exploreApi.fetchExplore(CurrentUser.getUser()!!.id).enqueue(callback)
     }
 }
