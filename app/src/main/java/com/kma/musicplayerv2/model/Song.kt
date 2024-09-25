@@ -11,7 +11,6 @@ data class Song(
     val thumbnail: String,
     val videoUrl: String,
     val createdTime: Long,
-    var isFavourite: Boolean = false,
     var isDownloaded: Boolean = false,
     var isPremium: Boolean = false
 ) : Serializable

@@ -114,4 +114,6 @@
     <string name="unhide">Bỏ ẩn</string>
     <string name="unhide_songs_successfully">Bỏ ẩn bài hát thành công</string>
     <string name="no_song">Không có bài hát</string>
+    <string name="song_for_you">Gợi ý cho bạn</string>
+    <string name="chill">Chill</string>
 </resources>

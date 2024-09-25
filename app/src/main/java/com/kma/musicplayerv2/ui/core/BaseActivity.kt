@@ -118,6 +118,14 @@ abstract class BaseActivity<DB : ViewDataBinding> : AppCompatActivity(), Service
         startActivity(intent)
     }
 
+    fun showActivityForResult(clazz: Class<*>, requestCode: Int, bundle: Bundle? = null) {
+        val intent = Intent(this, clazz)
+        if (bundle != null) {
+            intent.putExtras(bundle)
+        }
+        startActivityForResult(intent, requestCode)
+    }
+
     override fun onResume() {
         super.onResume()
         val bottomMiniPlayer =

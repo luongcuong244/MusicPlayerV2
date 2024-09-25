@@ -54,6 +54,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
     private var exo_duration: TextView? = null
     private var exo_progress: DefaultTimeBar? = null
     private var exo_controller: LinearLayout? = null
+    private var isFavourite = false
 
     override fun getContentView(): Int = R.layout.activity_play_song
 
@@ -83,9 +84,20 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
 
         if (!isFromMiniPlayer && SharePrefUtils.getSongIds().isNullOrEmpty()) {
             val songs = intent.getSerializableExtra(Constant.BUNDLE_SONGS)
-            val currentIndex = intent.getIntExtra(Constant.BUNDLE_START_FROM_INDEX, 0)
-            SharePrefUtils.saveSongIds((songs as MutableList<Song>).map { it.id })
-            SharePrefUtils.saveCurrentSongIndex(currentIndex)
+            if (songs != null) {
+                val currentIndex = intent.getIntExtra(Constant.BUNDLE_START_FROM_INDEX, 0)
+                SharePrefUtils.saveSongIds((songs as MutableList<Song>).map { it.id })
+                SharePrefUtils.saveCurrentSongIndex(currentIndex)
+                return
+            }
+            val song = intent.getSerializableExtra(Constant.BUNDLE_SONG)
+            if (song != null) {
+                val list = mutableListOf<String>()
+                list.addAll(SharePrefUtils.getSongIds()!!)
+                list.add((song as Song).id)
+                SharePrefUtils.saveSongIds(list)
+                SharePrefUtils.saveCurrentSongIndex(SharePrefUtils.getSongIds()!!.size - 1)
+            }
         }
     }
 
@@ -99,15 +111,27 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
     private fun setupPlayers() {
         if (!isFromMiniPlayer) {
             val songs = intent.getSerializableExtra(Constant.BUNDLE_SONGS)
-            songService?.songs?.clear()
-            songService?.addMore(songs as MutableList<Song>)
+            val song = intent.getSerializableExtra(Constant.BUNDLE_SONG)
+            if (songs != null) {
+                songService?.songs?.clear()
+                songService?.addMore(songs as MutableList<Song>)
+            } else if (song != null) {
+                songService?.addMore(mutableListOf(song as Song))
+            }
         }
         playerView.player = songService?.audioPlayerManager?.simpleExoPlayer
         setupObservers()
         setupListeners()
         if (!isFromMiniPlayer) {
-            val currentIndex = intent.getIntExtra(Constant.BUNDLE_START_FROM_INDEX, 0)
-            songService?.playAt(currentIndex)
+            val songs = intent.getSerializableExtra(Constant.BUNDLE_SONGS)
+            val song = intent.getSerializableExtra(Constant.BUNDLE_SONG)
+            if (songs != null) {
+                val currentIndex = intent.getIntExtra(Constant.BUNDLE_START_FROM_INDEX, 0)
+                songService?.playAt(currentIndex)
+            } else if (song != null) {
+                val currentSongIndex = songService?.songs?.lastIndex
+                songService?.playAt(currentSongIndex ?: 0)
+            }
         } else {
             playerView.showController()
         }
@@ -116,12 +140,12 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
     private fun setupListeners() {
         ivFavourite.setOnClickListener {
             val song = songService?.playingSong?.value ?: return@setOnClickListener
-            if (song.isFavourite) {
+            if (isFavourite) {
                 SongRepository.removeFavouriteSong(
                     song,
                     object : ApiCallback<Void> {
                         override fun onSuccess(data: Void?) {
-                            song.isFavourite = false
+                            isFavourite = false
                             ivFavourite.setImageResource(R.drawable.ic_not_favourite)
                         }
 
@@ -135,7 +159,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                     song,
                     object : ApiCallback<Void> {
                         override fun onSuccess(data: Void?) {
-                            song.isFavourite = true
+                            isFavourite = true
                             ivFavourite.setImageResource(R.drawable.ic_favourite)
                         }
 
@@ -232,13 +256,13 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                         }
                     )
                 },
-                onClickAddToFavorite = {song ->
-                    if (song.isFavourite) {
+                onClickAddToFavorite = {song, isFavourite ->
+                    if (isFavourite) {
                         SongRepository.removeFavouriteSong(
                             song,
                             object : ApiCallback<Void> {
                                 override fun onSuccess(data: Void?) {
-                                    song.isFavourite = false
+                                    this@PlaySongActivity.isFavourite = false
                                     ivFavourite.setImageResource(R.drawable.ic_not_favourite)
                                 }
 
@@ -252,7 +276,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                             song,
                             object : ApiCallback<Void> {
                                 override fun onSuccess(data: Void?) {
-                                    song.isFavourite = true
+                                    this@PlaySongActivity.isFavourite = true
                                     ivFavourite.setImageResource(R.drawable.ic_favourite)
                                 }
 
@@ -298,7 +322,19 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
             }
         }
         songService?.playingSong?.observe(this) {
-            updateUIBasedOnCurrentSong()
+            SongRepository.isFavoriteSong(
+                it.id,
+                object : ApiCallback<Boolean> {
+                    override fun onSuccess(data: Boolean?) {
+                        isFavourite = data ?: false
+                        updateUIBasedOnCurrentSong()
+                    }
+
+                    override fun onFailure(message: String) {
+                        Toast.makeText(this@PlaySongActivity, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
         }
     }
 
@@ -353,7 +389,7 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
         songService?.playingSong?.value?.let {
             tvSongName.text = it.title
             tvArtist.text = it.artist.name
-            if (it.isFavourite) {
+            if (isFavourite) {
                 ivFavourite.setImageResource(R.drawable.ic_favourite)
             } else {
                 ivFavourite.setImageResource(R.drawable.ic_not_favourite)

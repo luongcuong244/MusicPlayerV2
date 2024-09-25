@@ -212,22 +212,20 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             }
                         )
                     },
-                    onClickAddToFavorite = {
-                        if (it.isFavourite) {
+                    onClickAddToFavorite = { song, isFavourite ->
+                        if (isFavourite) {
                             viewPlaylistViewModel.unFavouriteSong(
                                 context = this,
-                                song = it,
+                                song = song,
                                 onUnFavouriteSuccess = {
-                                    it.isFavourite = false
                                     songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         } else {
                             viewPlaylistViewModel.addFavoriteSong(
                                 context = this,
-                                song = it,
+                                song = song,
                                 onAddFavoriteSuccess = {
-                                    it.isFavourite = true
                                     songAdapter?.notifyDataSetChanged()
                                 }
                             )
@@ -256,17 +254,6 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                     }
                 )
                 bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-            },
-            onClickUnFavourite = { song, position ->
-                viewPlaylistViewModel.unFavouriteSong(
-                    context = this,
-                    song = song,
-                    onUnFavouriteSuccess = {
-                        song.isFavourite = false
-                        songAdapter?.notifyDataSetChanged()
-                    }
-                )
-                songAdapter?.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(

@@ -119,13 +119,12 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                             }
                         )
                     },
-                    onClickAddToFavorite = {
-                        if (it.isFavourite) {
+                    onClickAddToFavorite = { song, isFavourite ->
+                        if (isFavourite) {
                             listenSongRecentlyViewModel.unFavouriteSong(
                                 context = requireActivity(),
-                                song = it,
+                                song = song,
                                 onUnFavouriteSuccess = {
-                                    it.isFavourite = false
                                     songAdapter?.notifyDataSetChanged()
                                 }
                             )
@@ -195,17 +194,6 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                     }
                 )
                 bottomSheet.show(childFragmentManager, bottomSheet.tag)
-            },
-            onClickUnFavourite = { song, position ->
-                listenSongRecentlyViewModel.unFavouriteSong(
-                    context = requireActivity(),
-                    song = song,
-                    onUnFavouriteSuccess = {
-                        song.isFavourite = false
-                        songAdapter?.notifyDataSetChanged()
-                    }
-                )
-                songAdapter?.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(

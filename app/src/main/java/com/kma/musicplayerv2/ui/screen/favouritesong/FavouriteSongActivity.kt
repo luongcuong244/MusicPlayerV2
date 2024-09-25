@@ -121,13 +121,12 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                             }
                         )
                     },
-                    onClickAddToFavorite = {
-                        if (it.isFavourite) {
+                    onClickAddToFavorite = { song, isFavourite ->
+                        if (isFavourite) {
                             favouriteSongViewModel.unFavouriteSong(
                                 context = this,
-                                song = it,
+                                song = song,
                                 onUnFavouriteSuccess = {
-                                    it.isFavourite = false
                                     songAdapter?.notifyDataSetChanged()
                                 }
                             )
@@ -201,17 +200,6 @@ class FavouriteSongActivity : BaseActivity<ActivityFavouriteSongBinding>() {
                     }
                 )
                 bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-            },
-            onClickUnFavourite = { song, position ->
-                favouriteSongViewModel.unFavouriteSong(
-                    context = this,
-                    song = song,
-                    onUnFavouriteSuccess = {
-                        song.isFavourite = false
-                        songAdapter?.notifyDataSetChanged()
-                    }
-                )
-                songAdapter?.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(

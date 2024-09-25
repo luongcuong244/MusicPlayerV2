@@ -15,20 +15,18 @@ data class SongDto(
     @SerializedName("video_url") val videoUrl: String,
     @SerializedName("views") val views: Long,
     @SerializedName("favorites") val favorites: Long,
-    @SerializedName("Artist") val artist: Artist?,
+    @SerializedName("Album") val album: AlbumDto?,
     @SerializedName("duration") val duration: Int,
     @SerializedName("created_at") val createdAt: Date,
-    @SerializedName("isFavourite") val isFavourite: Boolean,
 ) {
     fun toSong(): Song {
         return Song(
             id = id,
             title = title,
-            artist = artist ?: Artist("", "Unknown Artist", ""),
+            artist = album?.artist?.toArtist() ?: Artist("", "Unknown Artist", ""),
             thumbnail = imageUrl.replace("localhost", ServerAddress.SERVER_IP),
             path = fileUrl.replace("localhost", ServerAddress.SERVER_IP),
             videoUrl = videoUrl.replace("localhost", ServerAddress.SERVER_IP),
-            isFavourite = isFavourite,
             createdTime = createdAt.time,
         )
     }

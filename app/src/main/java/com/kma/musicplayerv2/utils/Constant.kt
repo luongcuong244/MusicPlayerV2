@@ -2,6 +2,7 @@ package com.kma.musicplayerv2.utils
 
 object Constant {
     const val BUNDLE_SONGS = "BUNDLE_SONGS"
+    const val BUNDLE_SONG = "BUNDLE_SONG"
     const val BUNDLE_SONG_STATUS = "BUNDLE_SONG_STATUS"
     const val BUNDLE_START_FROM_INDEX = "BUNDLE_START_FROM_INDEX"
     const val BUNDLE_IS_FROM_BOTTOM_MINI_PLAYER = "BUNDLE_IS_FROM_BOTTOM_MINI_PLAYER"

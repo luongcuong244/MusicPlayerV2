@@ -1,11 +1,15 @@
 package com.kma.musicplayerv2.network.retrofit.api
 
 import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
+import com.kma.musicplayerv2.network.retrofit.model.AddFavouriteSongRequest
+import com.kma.musicplayerv2.network.retrofit.model.AddFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetAllSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetHiddenSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.HideSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.HideSongResponse
+import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongRequest
+import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
 import com.kma.musicplayerv2.network.retrofit.model.SongDto
 import com.kma.musicplayerv2.network.retrofit.model.UnhideSongRequest
@@ -27,11 +31,11 @@ interface SongApi {
     @GET("app/get-uploaded-songs")
     fun getUploadedSongs(): Call<List<SongDto>>
 
-    @POST("app/add-favourite-song")
-    fun addFavouriteSong(songId: String): Call<Void>
+    @POST("/api/song/v1/add-favourite-song")
+    fun addFavouriteSong(@Body request: AddFavouriteSongRequest): Call<AddFavouriteSongResponse>
 
-    @POST("app/remove-favourite-song")
-    fun removeFavouriteSong(songId: String): Call<Void>
+    @POST("/api/song/v1/remove-favourite-song")
+    fun removeFavouriteSong(@Body request: RemoveFavouriteSongRequest): Call<RemoveFavouriteSongResponse>
 
     @GET("/api/song/v1/get-hidden-songs")
     fun getHiddenSongs(@Query("userId") userId: String): Call<GetHiddenSongResponse>
