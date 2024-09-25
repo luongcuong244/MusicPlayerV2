@@ -34,7 +34,7 @@ import kotlin.random.Random
 
 class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
     private lateinit var viewPlaylistViewModel: ViewPlaylistViewModel
-    private lateinit var songAdapter: SongAdapter
+    private var songAdapter: SongAdapter? = null
 
     private lateinit var playlist: Playlist
 
@@ -46,10 +46,16 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
         initView()
         setupListeners()
         setupObservers()
+        viewPlaylistViewModel.init(playlist.songs)
+        setupSongAdapter()
 
-        viewPlaylistViewModel.fetchSongsByPlaylist(this, playlist.id, onSuccessful = {
-            setupSongAdapter()
-        })
+        if (playlist.songs.isEmpty()) {
+            binding.tvNoSong.visibility = View.VISIBLE
+            binding.rvSong.visibility = View.GONE
+        }
+//        viewPlaylistViewModel.fetchSongsByPlaylist(this, playlist.id, onSuccessful = {
+//            setupSongAdapter()
+//        })
     }
 
     private fun initView() {
@@ -94,6 +100,8 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
     }
 
     private fun setupListeners() {
+        if (playlist.songs.isEmpty()) return
+
         binding.llSort.setOnClickListener {
             val bottomSheet = SortByBottomSheet(
                 sortBy = viewPlaylistViewModel.sortBy.value!!,
@@ -109,7 +117,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                 filterByArtists = viewPlaylistViewModel.filterByArtists,
                 onClickApply = {
                     viewPlaylistViewModel.setFilterByArtists(it)
-                    songAdapter.notifyDataSetChanged()
+                    songAdapter?.notifyDataSetChanged()
                 }
             )
             filterByArtistBottomSheet.show(supportFragmentManager, filterByArtistBottomSheet.tag)
@@ -135,7 +143,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
         viewPlaylistViewModel.sortBy.observe(this) {
             binding.tvSort.text = getString(it.textId)
             viewPlaylistViewModel.sortSongs()
-            songAdapter.notifyDataSetChanged()
+            songAdapter?.notifyDataSetChanged()
         }
         viewPlaylistViewModel.totalSongs.observe(this) {
             binding.tvTotalSong.text =
@@ -160,12 +168,16 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                                 override fun onSuccess(data: Void?) {
                                     viewPlaylistViewModel.songs.remove(it)
                                     viewPlaylistViewModel.tempSongs.remove(it)
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                     Toast.makeText(
                                         this@ViewPlaylistActivity,
                                         getString(R.string.delete_successfully),
                                         Toast.LENGTH_SHORT
                                     ).show()
+
+                                    if (viewPlaylistViewModel.tempSongs.isEmpty()) {
+                                        finish()
+                                    }
                                 }
 
                                 override fun onFailure(message: String) {
@@ -184,7 +196,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             song = song,
                             onDownloadSuccess = {
                                 song.isDownloaded = true
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
                                 Toast.makeText(
                                     this,
                                     getString(R.string.download_successfully),
@@ -207,7 +219,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                                 song = it,
                                 onUnFavouriteSuccess = {
                                     it.isFavourite = false
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         } else {
@@ -216,7 +228,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                                 song = it,
                                 onAddFavoriteSuccess = {
                                     it.isFavourite = true
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         }
@@ -234,7 +246,11 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             context = this,
                             song = it,
                             onHideSuccess = {
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
+
+                                if (viewPlaylistViewModel.tempSongs.isEmpty()) {
+                                    finish()
+                                }
                             }
                         )
                     }
@@ -247,10 +263,10 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                     song = song,
                     onUnFavouriteSuccess = {
                         song.isFavourite = false
-                        songAdapter.notifyDataSetChanged()
+                        songAdapter?.notifyDataSetChanged()
                     }
                 )
-                songAdapter.notifyItemRemoved(position)
+                songAdapter?.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(
@@ -266,6 +282,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                         )
                     },
                 )
+                PlaylistRepository.triggerRecentlyPlaylist(playlist.id, playlist.name)
             }
         )
         binding.rvSong.apply {

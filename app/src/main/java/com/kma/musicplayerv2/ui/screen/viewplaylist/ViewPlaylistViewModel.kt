@@ -22,34 +22,42 @@ class ViewPlaylistViewModel : ViewModel() {
     private val _sortBy = MutableLiveData(SortType.NEWEST)
     val sortBy: LiveData<SortType> = _sortBy
 
-    fun fetchSongsByPlaylist(context: Context, playlistId: String, onSuccessful: () -> Unit) {
-        SongRepository.getSongsByPlaylistId(
-            playlistId,
-            object : ApiCallback<List<Song>> {
-                override fun onSuccess(data: List<Song>?) {
-                    if (data == null) {
-                        onFailure("Unknown error")
-                        return
-                    }
-                    songs.clear()
-                    songs.addAll(data)
-                    tempSongs.clear()
-                    tempSongs.addAll(data)
-                    sortSongs()
-                    _totalSongs.value = tempSongs.size
-                    onSuccessful()
-                }
-
-                override fun onFailure(message: String) {
-                    Toast.makeText(
-                        context,
-                        "Failed to fetch favourite songs: $message",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        )
+    fun init(songs: List<Song>) {
+        this.songs.clear()
+        this.songs.addAll(songs)
+        tempSongs.clear()
+        tempSongs.addAll(songs)
+        sortSongs()
+        _totalSongs.value = tempSongs.size
     }
+//    fun fetchSongsByPlaylist(context: Context, playlistId: String, onSuccessful: () -> Unit) {
+//        SongRepository.getSongsByPlaylistId(
+//            playlistId,
+//            object : ApiCallback<List<Song>> {
+//                override fun onSuccess(data: List<Song>?) {
+//                    if (data == null) {
+//                        onFailure("Unknown error")
+//                        return
+//                    }
+//                    songs.clear()
+//                    songs.addAll(data)
+//                    tempSongs.clear()
+//                    tempSongs.addAll(data)
+//                    sortSongs()
+//                    _totalSongs.value = tempSongs.size
+//                    onSuccessful()
+//                }
+//
+//                override fun onFailure(message: String) {
+//                    Toast.makeText(
+//                        context,
+//                        "Failed to fetch favourite songs: $message",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
+//        )
+//    }
 
     fun sortSongs() {
         when (_sortBy.value) {

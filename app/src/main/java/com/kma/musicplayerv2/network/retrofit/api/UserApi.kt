@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface UserApi {
 
-    @GET("/api/user/v1//profile")
+    @GET("/api/user/v1/profile")
     fun getUserInfo(): Call<GetUserInfoResponse>
 
     @POST("app/change-user-name")

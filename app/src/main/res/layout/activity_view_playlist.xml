@@ -41,7 +41,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -174,13 +174,31 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_song"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/_13sdp"
-                    android:layout_weight="1"
-                    android:paddingBottom="@dimen/_13sdp" />
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_no_song"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/nunito_semibold"
+                        android:text="@string/no_song"
+                        android:textColor="#CDCECE"
+                        android:textSize="@dimen/_12ssp"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_song"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"
+                        android:paddingBottom="@dimen/_13sdp" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

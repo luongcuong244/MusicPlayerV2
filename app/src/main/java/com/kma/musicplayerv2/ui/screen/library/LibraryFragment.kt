@@ -1,5 +1,6 @@
 package com.kma.musicplayerv2.ui.screen.library
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -48,7 +49,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
 
     private fun setupListeners() {
         binding.llFavourite.setOnClickListener {
-            showActivity(FavouriteSongActivity::class.java)
+            showActivityForResult(FavouriteSongActivity::class.java, 100)
         }
     }
 
@@ -57,22 +58,24 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
             listenRecentlyAdapter = ListenRecentlyAdapter(
                 libraryViewModel.recentlyPlaylists,
                 {
-                    showActivity(ViewPlaylistActivity::class.java, Bundle().apply {
+                    showActivityForResult(ViewPlaylistActivity::class.java, 100, Bundle().apply {
                         putSerializable(Constant.BUNDLE_PLAYLIST, it)
                     })
                 },
                 {
-                    showActivity(ListenRecentlyActivity::class.java)
+                    showActivityForResult(ListenRecentlyActivity::class.java, 100)
                 }
             )
             binding.rvListenRecently.adapter = listenRecentlyAdapter
-            binding.rvListenRecently.addItemDecoration(
-                HorizontalSpaceItemDecoration(
-                    requireActivity().resources.getDimension(
-                        com.intuit.sdp.R.dimen._13sdp
-                    ).toInt()
+            if (binding.rvListenRecently.itemDecorationCount == 0) {
+                binding.rvListenRecently.addItemDecoration(
+                    HorizontalSpaceItemDecoration(
+                        requireActivity().resources.getDimension(
+                            com.intuit.sdp.R.dimen._13sdp
+                        ).toInt()
+                    )
                 )
-            )
+            }
             binding.rvListenRecently.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
@@ -83,7 +86,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
             playlistAdapter = PlaylistAdapter(
                 libraryViewModel.playlists,
                 {
-                    showActivity(ViewPlaylistActivity::class.java, Bundle().apply {
+                    showActivityForResult(ViewPlaylistActivity::class.java, 100, Bundle().apply {
                         putSerializable(Constant.BUNDLE_PLAYLIST, it)
                     })
                 },
@@ -101,14 +104,26 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
                 }
             )
             binding.rvYourPlaylist.adapter = playlistAdapter
-            binding.rvYourPlaylist.addItemDecoration(
-                VerticalSpaceItemDecoration(
-                    requireActivity().resources.getDimension(
-                        com.intuit.sdp.R.dimen._13sdp
-                    ).toInt()
+
+            // check if itemdecoration is not null
+            if (binding.rvYourPlaylist.itemDecorationCount == 0) {
+                binding.rvYourPlaylist.addItemDecoration(
+                    VerticalSpaceItemDecoration(
+                        requireActivity().resources.getDimension(
+                            com.intuit.sdp.R.dimen._13sdp
+                        ).toInt()
+                    )
                 )
-            )
+            }
             binding.rvYourPlaylist.layoutManager = LinearLayoutManager(context)
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        initView()
+        setupListeners()
+        setupListenRecentlyAdapter()
+        setupPlaylistAdapter()
     }
 }

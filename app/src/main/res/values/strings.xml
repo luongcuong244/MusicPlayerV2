@@ -15,7 +15,7 @@
     <string name="favourite">Yêu thích</string>
     <string name="dowloaded">Đã tải</string>
     <string name="upload">Upload</string>
-    <string name="listenRecently">Nghe gần đây</string>
+    <string name="listenRecently">Gần đây</string>
     <string name="view_all">Xem tất cả</string>
     <string name="song_listen_recently">Bài hát nghe gần đây</string>
     <string name="song">bài hát</string>
@@ -113,4 +113,5 @@
     <string name="no_song_found">Không có bài hát nào</string>
     <string name="unhide">Bỏ ẩn</string>
     <string name="unhide_songs_successfully">Bỏ ẩn bài hát thành công</string>
+    <string name="no_song">Không có bài hát</string>
 </resources>

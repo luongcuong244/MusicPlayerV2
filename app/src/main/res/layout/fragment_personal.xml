@@ -86,161 +86,161 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/_17ssp" />
 
-                        <TextView
-                            android:id="@+id/tv_membership_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4sdp"
-                            android:background="@drawable/bg_txt_basic_membership"
-                            android:fontFamily="@font/nunito_black"
-                            android:paddingHorizontal="@dimen/_6sdp"
-                            android:paddingVertical="2dp"
-                            android:text="BASIC"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_9ssp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/tv_membership_type"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="@dimen/_4sdp"-->
+<!--                            android:background="@drawable/bg_txt_basic_membership"-->
+<!--                            android:fontFamily="@font/nunito_black"-->
+<!--                            android:paddingHorizontal="@dimen/_6sdp"-->
+<!--                            android:paddingVertical="2dp"-->
+<!--                            android:text="BASIC"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="@dimen/_9ssp" />-->
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/_20sdp"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="@string/upgrade_account"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_16ssp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/nunito_bold"-->
+<!--                        android:text="@string/upgrade_account"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="@dimen/_16ssp" />-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:background="@drawable/bg_personal_premium"
-                        android:orientation="vertical"
-                        android:padding="@dimen/_13sdp">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="@dimen/_10sdp"-->
+<!--                        android:background="@drawable/bg_personal_premium"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:padding="@dimen/_13sdp">-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:gravity="center_vertical">-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_bold"
-                                android:text="@string/app_name"
-                                android:textColor="#e5b331"
-                                android:textSize="@dimen/_20ssp" />
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:fontFamily="@font/nunito_bold"-->
+<!--                                android:text="@string/app_name"-->
+<!--                                android:textColor="#e5b331"-->
+<!--                                android:textSize="@dimen/_20ssp" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:background="@drawable/bg_txt_premium_membership"
-                                android:fontFamily="@font/nunito_black"
-                                android:paddingHorizontal="@dimen/_6sdp"
-                                android:paddingVertical="2dp"
-                                android:text="PREMIUM"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_10ssp" />
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="@dimen/_10sdp"-->
+<!--                                android:background="@drawable/bg_txt_premium_membership"-->
+<!--                                android:fontFamily="@font/nunito_black"-->
+<!--                                android:paddingHorizontal="@dimen/_6sdp"-->
+<!--                                android:paddingVertical="2dp"-->
+<!--                                android:text="PREMIUM"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textSize="@dimen/_10ssp" />-->
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+<!--                            <View-->
+<!--                                android:layout_width="0dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_weight="1" />-->
 
-                            <ImageView
-                                android:layout_width="@dimen/_20ssp"
-                                android:layout_height="@dimen/_20ssp"
-                                android:alpha="0.5"
-                                android:src="@drawable/ic_arrow_right" />
+<!--                            <ImageView-->
+<!--                                android:layout_width="@dimen/_20ssp"-->
+<!--                                android:layout_height="@dimen/_20ssp"-->
+<!--                                android:alpha="0.5"-->
+<!--                                android:src="@drawable/ic_arrow_right" />-->
 
-                        </LinearLayout>
+<!--                        </LinearLayout>-->
 
-                        <TextView
-                            android:id="@+id/tv_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="@dimen/_7sdp"
-                            android:fontFamily="@font/nunito_bold"
-                            android:text="49,000đ"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_17ssp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/tv_price"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginVertical="@dimen/_7sdp"-->
+<!--                            android:fontFamily="@font/nunito_bold"-->
+<!--                            android:text="49,000đ"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="@dimen/_17ssp" />-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:gravity="center_vertical">-->
 
-                            <View
-                                android:layout_width="@dimen/_5sdp"
-                                android:layout_height="@dimen/_5sdp"
-                                android:background="@drawable/bg_white_dot" />
+<!--                            <View-->
+<!--                                android:layout_width="@dimen/_5sdp"-->
+<!--                                android:layout_height="@dimen/_5sdp"-->
+<!--                                android:background="@drawable/bg_white_dot" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:fontFamily="@font/nunito_regular"
-                                android:text="@string/listen_high_quality_music"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12ssp" />
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="@dimen/_8sdp"-->
+<!--                                android:fontFamily="@font/nunito_regular"-->
+<!--                                android:text="@string/listen_high_quality_music"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textSize="@dimen/_12ssp" />-->
 
-                        </LinearLayout>
+<!--                        </LinearLayout>-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4sdp"
-                            android:gravity="center_vertical">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="@dimen/_4sdp"-->
+<!--                            android:gravity="center_vertical">-->
 
-                            <View
-                                android:layout_width="@dimen/_5sdp"
-                                android:layout_height="@dimen/_5sdp"
-                                android:background="@drawable/bg_white_dot" />
+<!--                            <View-->
+<!--                                android:layout_width="@dimen/_5sdp"-->
+<!--                                android:layout_height="@dimen/_5sdp"-->
+<!--                                android:background="@drawable/bg_white_dot" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:fontFamily="@font/nunito_regular"
-                                android:text="@string/unlock_all_songs"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12ssp" />
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="@dimen/_8sdp"-->
+<!--                                android:fontFamily="@font/nunito_regular"-->
+<!--                                android:text="@string/unlock_all_songs"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textSize="@dimen/_12ssp" />-->
 
-                        </LinearLayout>
+<!--                        </LinearLayout>-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4sdp"
-                            android:gravity="center_vertical">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="@dimen/_4sdp"-->
+<!--                            android:gravity="center_vertical">-->
 
-                            <View
-                                android:layout_width="@dimen/_5sdp"
-                                android:layout_height="@dimen/_5sdp"
-                                android:background="@drawable/bg_white_dot" />
+<!--                            <View-->
+<!--                                android:layout_width="@dimen/_5sdp"-->
+<!--                                android:layout_height="@dimen/_5sdp"-->
+<!--                                android:background="@drawable/bg_white_dot" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:fontFamily="@font/nunito_regular"
-                                android:text="@string/no_ads"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12ssp" />
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="@dimen/_8sdp"-->
+<!--                                android:fontFamily="@font/nunito_regular"-->
+<!--                                android:text="@string/no_ads"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textSize="@dimen/_12ssp" />-->
 
-                        </LinearLayout>
+<!--                        </LinearLayout>-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
                 <TextView
                     android:layout_width="wrap_content"

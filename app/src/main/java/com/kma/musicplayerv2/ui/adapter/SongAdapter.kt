@@ -40,7 +40,7 @@ class SongAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.tvTitle.text = song.title
-            binding.tvArtist.text = song.artist.name
+            binding.tvArtist.text = song.artist?.name ?: "Unknown Artist"
             binding.ivDownloaded.visibility = if (song.isDownloaded) {
                 View.VISIBLE
             } else {

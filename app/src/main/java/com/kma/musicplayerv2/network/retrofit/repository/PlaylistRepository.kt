@@ -6,11 +6,14 @@ import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayerv2.network.retrofit.api.PlaylistApi
 import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistRequest
+import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.CreatePlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.CreatePlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.DeleteSongToPlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.GetAllPlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.PlaylistDto
+import com.kma.musicplayerv2.network.retrofit.model.RemoveSongFromPlaylistResponse
+import com.kma.musicplayerv2.network.retrofit.model.TriggerRecentlyPlaylistResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,32 +66,28 @@ object PlaylistRepository {
         )
     }
 
-    fun addSongToPlaylist(songId: Long, playlistId: String, apiCallback: ApiCallback<Boolean>) {
-        apiCallback.onSuccess(true)
-        return
-        playlistApi.addSongToPlaylist(AddSongToPlaylistRequest(songId, playlistId)).enqueue(
-            object : Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+    fun addSongToPlaylist(songId: String, playlistId: String, apiCallback: ApiCallback<Boolean>) {
+        playlistApi.addSongToPlaylist(AddSongToPlaylistRequest(listOf(songId), playlistId)).enqueue(
+            object : Callback<AddSongToPlaylistResponse> {
+                override fun onResponse(call: Call<AddSongToPlaylistResponse>, response: Response<AddSongToPlaylistResponse>) {
                     if (response.isSuccessful) {
-                        apiCallback.onSuccess(response.body() ?: false)
+                        apiCallback.onSuccess(true)
                     } else {
-                        apiCallback.onFailure("Unknown error")
+                        apiCallback.onSuccess(false)
                     }
                 }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                override fun onFailure(call: Call<AddSongToPlaylistResponse>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }
         )
     }
 
-    fun removeSongFromPlaylist(songId: Long, playlistId: String, apiCallback: ApiCallback<Void>) {
-        apiCallback.onSuccess(null)
-        return
-        playlistApi.removeSongFromPlaylist(DeleteSongToPlaylistRequest(songId, playlistId)).enqueue(
-            object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+    fun removeSongFromPlaylist(songId: String, playlistId: String, apiCallback: ApiCallback<Void>) {
+        playlistApi.removeSongFromPlaylist(DeleteSongToPlaylistRequest(listOf(songId), playlistId)).enqueue(
+            object : Callback<RemoveSongFromPlaylistResponse> {
+                override fun onResponse(call: Call<RemoveSongFromPlaylistResponse>, response: Response<RemoveSongFromPlaylistResponse>) {
                     if (response.isSuccessful) {
                         apiCallback.onSuccess(null)
                     } else {
@@ -96,7 +95,7 @@ object PlaylistRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
+                override fun onFailure(call: Call<RemoveSongFromPlaylistResponse>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
                 }
             }
@@ -104,45 +103,21 @@ object PlaylistRepository {
     }
 
     fun getRecentlyPlaylist(apiCallback: ApiCallback<List<Playlist>>) {
-//        apiCallback.onSuccess(
-//            listOf(
-//                Playlist(
-//                    id = "",
-//                    totalSong = 10,
-//                    name = "#123",
-//                    image = "https://images.pexels.com/photos/4162581/pexels-photo-4162581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-//                ),
-//                Playlist(
-//                    id = "",
-//                    totalSong = 15,
-//                    name = "999999",
-//                    image = "https://images.pexels.com/photos/5699509/pexels-photo-5699509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-//                ),
-//                Playlist(
-//                    id = "",
-//                    totalSong = 20,
-//                    name = "FGDSD",
-//                    image = "https://images.pexels.com/photos/5965930/pexels-photo-5965930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-//                ),
-//            )
-//        )
-        return
-        playlistApi.getRecentlyPlaylist().enqueue(
-            object : Callback<List<PlaylistDto>> {
-                override fun onResponse(
-                    call: Call<List<PlaylistDto>>,
-                    response: Response<List<PlaylistDto>>
-                ) {
-                    val playlists = response.body()?.map { it.toPlaylist() }
-                    if (playlists != null) {
-                        apiCallback.onSuccess(playlists)
-                    } else {
-                        apiCallback.onFailure("Unknown error")
+        getAllPlaylists(
+            object : ApiCallback<List<Playlist>> {
+                override fun onSuccess(data: List<Playlist>?) {
+                    if (data.isNullOrEmpty()) {
+                        apiCallback.onSuccess(emptyList())
+                        return
                     }
+                    // lấy ra playlist có updated_at 7 ngày gần nhất
+                    val sevenDaysAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
+                    val playlist = data.filter { it.updatedAt >= sevenDaysAgo }
+                    apiCallback.onSuccess(playlist)
                 }
 
-                override fun onFailure(call: Call<List<PlaylistDto>>, t: Throwable) {
-                    apiCallback.onFailure(t.message ?: "Unknown error")
+                override fun onFailure(message: String) {
+                    apiCallback.onFailure(message)
                 }
             }
         )
@@ -173,6 +148,23 @@ object PlaylistRepository {
 
                 override fun onFailure(call: Call<CreatePlaylistResponse>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun triggerRecentlyPlaylist(playlistId: String, playlistName: String) {
+        val map = mapOf(
+            "name" to playlistName
+        )
+        playlistApi.triggerRecentlyPlaylist(playlistId, map).enqueue(
+            object : Callback<TriggerRecentlyPlaylistResponse> {
+                override fun onResponse(call: Call<TriggerRecentlyPlaylistResponse>, response: Response<TriggerRecentlyPlaylistResponse>) {
+
+                }
+
+                override fun onFailure(call: Call<TriggerRecentlyPlaylistResponse>, t: Throwable) {
+
                 }
             }
         )

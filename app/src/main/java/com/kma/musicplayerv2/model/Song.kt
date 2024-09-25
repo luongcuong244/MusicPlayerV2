@@ -4,13 +4,14 @@ import java.io.Serializable
 import kotlin.random.Random
 
 data class Song(
-    val id: Long,
+    val id: String,
     val title: String,
     val artist: Artist,
     val path: String,
     val thumbnail: String,
-    val createdTime: Long = System.currentTimeMillis(),
-    var isFavourite: Boolean = Random.nextBoolean(),
-    var isDownloaded: Boolean = Random.nextBoolean(),
-    var isPremium: Boolean = Random.nextBoolean()
+    val videoUrl: String,
+    val createdTime: Long,
+    var isFavourite: Boolean = false,
+    var isDownloaded: Boolean = false,
+    var isPremium: Boolean = false
 ) : Serializable
