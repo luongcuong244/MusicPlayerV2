@@ -116,4 +116,6 @@
     <string name="no_song">Không có bài hát</string>
     <string name="song_for_you">Gợi ý cho bạn</string>
     <string name="chill">Chill</string>
+    <string name="share_playlist">Chia sẻ playlist</string>
+    <string name="delete_playlist">Xoá playlist</string>
 </resources>

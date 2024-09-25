@@ -4,6 +4,7 @@ import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.AddSongToPlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.CreatePlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.CreatePlaylistResponse
+import com.kma.musicplayerv2.network.retrofit.model.DeletePlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.DeleteSongToPlaylistRequest
 import com.kma.musicplayerv2.network.retrofit.model.GetAllPlaylistResponse
 import com.kma.musicplayerv2.network.retrofit.model.PlaylistDto
@@ -11,6 +12,7 @@ import com.kma.musicplayerv2.network.retrofit.model.RemoveSongFromPlaylistRespon
 import com.kma.musicplayerv2.network.retrofit.model.TriggerRecentlyPlaylistResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -31,4 +33,7 @@ interface PlaylistApi {
 
     @POST("/api/play-list/v1/{playlistId}")
     fun triggerRecentlyPlaylist(@Path("playlistId") playlistId: String, @Body name: Map<String, String>): Call<TriggerRecentlyPlaylistResponse>
+
+    @DELETE("/api/play-list/v1/{playlistId}")
+    fun deletePlaylist(@Path("playlistId") playlistId: String): Call<DeletePlaylistResponse>
 }

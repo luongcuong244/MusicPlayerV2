@@ -21,6 +21,7 @@ import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.ui.adapter.SongAdapter
 import com.kma.musicplayerv2.ui.bottomsheet.AddToPlaylistBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.FilterByArtistBottomSheet
+import com.kma.musicplayerv2.ui.bottomsheet.PlaylistOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SongOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SortByBottomSheet
 import com.kma.musicplayerv2.ui.core.BaseActivity
@@ -100,6 +101,36 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
     }
 
     private fun setupListeners() {
+        binding.ivMore.setOnClickListener {
+            val playlistOptionBottomSheet = PlaylistOptionBottomSheet(
+                playlist = playlist,
+                onDeletePlaylist = {
+                    PlaylistRepository.deletePlaylist(
+                        playlistId = it.id,
+                        apiCallback = object : ApiCallback<Void> {
+                            override fun onSuccess(data: Void?) {
+                                Toast.makeText(
+                                    this@ViewPlaylistActivity,
+                                    getString(R.string.delete_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                finish()
+                            }
+
+                            override fun onFailure(message: String) {
+                                Toast.makeText(
+                                    this@ViewPlaylistActivity,
+                                    getString(R.string.delete_failed),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    )
+                }
+            )
+            playlistOptionBottomSheet.show(supportFragmentManager, playlistOptionBottomSheet.tag)
+        }
+
         if (playlist.songs.isEmpty()) return
 
         binding.llSort.setOnClickListener {
