@@ -62,7 +62,11 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>() {
                 }
 
                 override fun onFailure(call: Call<ExploreResponse>, t: Throwable) {
-
+                    Toast.makeText(
+                        requireActivity(),
+                        "Failed to fetch explore data: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )

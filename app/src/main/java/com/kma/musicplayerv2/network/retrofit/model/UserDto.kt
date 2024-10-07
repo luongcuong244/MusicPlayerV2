@@ -5,7 +5,7 @@ import com.kma.musicplayerv2.model.User
 
 data class UserDto(
     @SerializedName("id") var id: String,
-    @SerializedName("fullName") var fullName: String?,
+    @SerializedName("user_name") var fullName: String?,
     @SerializedName("email") var email: String,
     @SerializedName("role") var role: Int,
     @SerializedName("phone") var phone: String?,

@@ -95,10 +95,10 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
             val song = intent.getSerializableExtra(Constant.BUNDLE_SONG)
             if (song != null) {
                 val list = mutableListOf<String>()
-                list.addAll(SharePrefUtils.getSongIds()!!)
+                list.addAll(SharePrefUtils.getSongIds())
                 list.add((song as Song).id)
                 SharePrefUtils.saveSongIds(list)
-                SharePrefUtils.saveCurrentSongIndex(SharePrefUtils.getSongIds()!!.size - 1)
+                SharePrefUtils.saveCurrentSongIndex(SharePrefUtils.getSongIds().size - 1)
             }
         }
     }

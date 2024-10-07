@@ -16,7 +16,7 @@ data class SongDto(
     @SerializedName("views") val views: Long,
     @SerializedName("favorites") val favorites: Long,
     @SerializedName("Album") val album: AlbumDto?,
-    @SerializedName("duration") val duration: Int,
+    @SerializedName("duration") val duration: Float,
     @SerializedName("created_at") val createdAt: Date,
 ) {
     fun toSong(): Song {

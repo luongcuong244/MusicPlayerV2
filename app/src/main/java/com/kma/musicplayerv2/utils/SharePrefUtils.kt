@@ -18,10 +18,10 @@ object SharePrefUtils {
         return editor.commit()
     }
 
-    fun getSongIds(): List<String>? {
+    fun getSongIds(): List<String> {
         val songIds = mSharePref!!.getString("songIds", "")
         if (songIds.isNullOrEmpty()) {
-            return null
+            return emptyList()
         }
         return songIds.split(",").map { it }
     }
