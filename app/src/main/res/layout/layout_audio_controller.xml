@@ -1,304 +1,318 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/audio_controller_root"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_gradient_v2"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/_13sdp"
-        android:paddingTop="@dimen/_20sdp">
+        android:background="@drawable/bg_gradient_v2">
 
-        <RelativeLayout
+        <SurfaceView
+            android:id="@+id/surface_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.kma.musicplayerv2.ui.customview.BackButton
-                android:id="@+id/back_button"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp" />
-
-            <ImageView
-                android:id="@+id/iv_more"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_more_vertical" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <com.kma.musicplayerv2.ui.customview.RectangleRelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginHorizontal="@dimen/_36sdp"
-                app:rectAspectRatio="1">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/transparent"
-                    app:cardCornerRadius="@dimen/_200sdp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#1A2335"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:id="@+id/iv_thumbnail"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="false"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/default_song_thumbnail" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </com.kma.musicplayerv2.ui.customview.RectangleRelativeLayout>
-
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:background="@color/transparent" />
 
         <LinearLayout
+            android:id="@+id/audio_controller_root"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_7sdp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_share"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_share" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <com.kma.musicplayerv2.ui.customview.MovableText
-                    android:id="@+id/tv_song_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="Back To Her Men"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_16ssp" />
-
-                <com.kma.musicplayerv2.ui.customview.MovableText
-                    android:id="@+id/tv_artist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:fontFamily="@font/nunito_regular"
-                    android:text="Demien Rice"
-                    android:textAlignment="center"
-                    android:textColor="#B3FFFFFF"
-                    android:textSize="@dimen/_12ssp" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/iv_favourite"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_not_favourite" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_118sdp"
-            android:layout_marginHorizontal="@dimen/_7sdp"
-            android:layout_marginTop="@dimen/_24sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:orientation="vertical">
-
-            <com.google.android.exoplayer2.ui.DefaultTimeBar
-                android:id="@+id/exo_progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:bar_height="3dp"
-                app:buffered_color="#33FFFFFF"
-                app:played_color="#FFFFFF"
-                app:scrubber_drawable="@drawable/custom_seekbar_thumb"
-                app:unplayed_color="#33FFFFFF" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/_13sdp"
+            android:paddingTop="@dimen/_20sdp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/exo_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:fontFamily="@font/nunito_regular"
-                    android:text="00:12"
-                    android:textColor="#B3FFFFFF"
-                    android:textSize="@dimen/_10ssp" />
+                <com.kma.musicplayerv2.ui.customview.BackButton
+                    android:id="@+id/back_button"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp" />
 
-                <TextView
-                    android:id="@+id/exo_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/iv_more"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
                     android:layout_alignParentEnd="true"
-                    android:fontFamily="@font/nunito_regular"
-                    android:text="00:12"
-                    android:textColor="#B3FFFFFF"
-                    android:textSize="@dimen/_10ssp" />
+                    android:src="@drawable/ic_more_vertical" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.kma.musicplayerv2.ui.customview.RectangleRelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginHorizontal="@dimen/_36sdp"
+                    app:rectAspectRatio="1">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardBackgroundColor="@color/transparent"
+                        app:cardCornerRadius="@dimen/_200sdp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#1A2335"
+                        app:strokeWidth="1dp">
+
+                        <ImageView
+                            android:id="@+id/iv_thumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="false"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/default_song_thumbnail" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </com.kma.musicplayerv2.ui.customview.RectangleRelativeLayout>
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_13sdp"
-                android:gravity="center">
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/iv_random"
+                    android:id="@+id/iv_share"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_random_off" />
+                    android:src="@drawable/ic_share" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/iv_previous"
-                        android:layout_width="@dimen/_25sdp"
-                        android:layout_height="@dimen/_25sdp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/ic_previous" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/ic_play_pause"
-                    android:layout_width="@dimen/_53sdp"
-                    android:layout_height="@dimen/_53sdp">
-
-                    <ImageView
-                        android:id="@+id/exo_play"
+                    <com.kma.musicplayerv2.ui.customview.MovableText
+                        android:id="@+id/tv_song_name"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_play" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="Back To Her Men"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp" />
 
-                    <ImageView
-                        android:id="@+id/exo_pause"
+                    <com.kma.musicplayerv2.ui.customview.MovableText
+                        android:id="@+id/tv_artist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_pause" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="Demien Rice"
+                        android:textAlignment="center"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="@dimen/_12ssp" />
 
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/iv_next"
-                        android:layout_width="@dimen/_25sdp"
-                        android:layout_height="@dimen/_25sdp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/ic_next" />
-
-                </RelativeLayout>
+                </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/iv_repeat"
+                    android:id="@+id/iv_favourite"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_no_repeat" />
+                    android:src="@drawable/ic_not_favourite" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_118sdp"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_24sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:orientation="vertical">
+
+                <com.google.android.exoplayer2.ui.DefaultTimeBar
+                    android:id="@+id/exo_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:bar_height="3dp"
+                    app:buffered_color="#33FFFFFF"
+                    app:played_color="#FFFFFF"
+                    app:scrubber_drawable="@drawable/custom_seekbar_thumb"
+                    app:unplayed_color="#33FFFFFF" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/exo_position"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="00:12"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="@dimen/_10ssp" />
+
+                    <TextView
+                        android:id="@+id/exo_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/nunito_regular"
+                        android:text="00:12"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="@dimen/_10ssp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_13sdp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_random"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_random_off" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/iv_previous"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_previous" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/ic_play_pause"
+                        android:layout_width="@dimen/_53sdp"
+                        android:layout_height="@dimen/_53sdp">
+
+                        <ImageView
+                            android:id="@+id/exo_play"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_play" />
+
+                        <ImageView
+                            android:id="@+id/exo_pause"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_pause" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/iv_next"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_next" />
+
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_repeat"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_no_repeat" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_chat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/_10sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_chat" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_add_to_playlist"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/_10sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_add_to_playlist" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_timer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/_10sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_timer"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_timer_off" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_queue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/_10sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_queue"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_queue" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_7sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/ll_chat"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/_10sdp">
-
-                <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_chat" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_add_to_playlist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/_10sdp">
-
-                <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_add_to_playlist" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_timer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/_10sdp">
-
-                <ImageView
-                    android:id="@+id/iv_timer"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_timer_off" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_queue"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/_10sdp">
-
-                <ImageView
-                    android:id="@+id/iv_queue"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/ic_queue" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

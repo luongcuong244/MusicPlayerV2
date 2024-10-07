@@ -29,7 +29,7 @@ import com.kma.musicplayerv2.utils.Constant
 import com.kma.musicplayerv2.utils.SharePrefUtils
 import com.kma.musicplayerv2.utils.ShareUtils
 import com.kma.musicplayerv2.utils.SongDownloader
-
+import com.kma.musicplayerv2.utils.VideoPlayer
 
 class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
 
@@ -54,6 +54,8 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
     private var exo_duration: TextView? = null
     private var exo_progress: DefaultTimeBar? = null
     private var exo_controller: LinearLayout? = null
+    private lateinit var videoPlayer: VideoPlayer
+
     private var isFavourite = false
 
     override fun getContentView(): Int = R.layout.activity_play_song
@@ -132,6 +134,11 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                 val currentSongIndex = songService?.songs?.lastIndex
                 songService?.playAt(currentSongIndex ?: 0)
             }
+            videoPlayer = VideoPlayer(
+                context = this,
+                videoView1 = findViewById(R.id.surface_view),
+            )
+            videoPlayer.play(this)
         } else {
             playerView.showController()
         }
