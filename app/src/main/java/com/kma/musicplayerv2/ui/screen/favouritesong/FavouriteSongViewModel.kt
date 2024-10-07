@@ -24,7 +24,6 @@ class FavouriteSongViewModel : ViewModel() {
 
     fun fetchFavouriteSongs(context: Context, onSuccessful: () -> Unit) {
         SongRepository.getFavouriteSongs(
-            context,
             object : ApiCallback<List<Song>> {
                 override fun onSuccess(data: List<Song>?) {
                     if (data == null) {
