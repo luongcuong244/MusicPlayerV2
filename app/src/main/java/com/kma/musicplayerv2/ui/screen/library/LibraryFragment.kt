@@ -13,6 +13,7 @@ import com.kma.musicplayerv2.ui.adapter.PlaylistAdapter
 import com.kma.musicplayerv2.ui.customview.HorizontalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
 import com.kma.musicplayerv2.ui.dialog.CreatePlaylistDialog
+import com.kma.musicplayerv2.ui.screen.downloadedsong.DownloadedSongActivity
 import com.kma.musicplayerv2.ui.screen.favouritesong.FavouriteSongActivity
 import com.kma.musicplayerv2.ui.screen.listenrecently.ListenRecentlyActivity
 import com.kma.musicplayerv2.ui.screen.viewplaylist.ViewPlaylistActivity
@@ -50,6 +51,9 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     private fun setupListeners() {
         binding.llFavourite.setOnClickListener {
             showActivityForResult(FavouriteSongActivity::class.java, 100)
+        }
+        binding.llDownloaded.setOnClickListener {
+            showActivityForResult(DownloadedSongActivity::class.java, 100)
         }
     }
 

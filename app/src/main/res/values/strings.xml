@@ -118,4 +118,8 @@
     <string name="chill">Chill</string>
     <string name="share_playlist">Chia sẻ playlist</string>
     <string name="delete_playlist">Xoá playlist</string>
+    <string name="view">Lượt xem</string>
+    <string name="by_favourite">Lượt thích</string>
+    <string name="no_data">Chưa có dữ liệu</string>
+    <string name="downloaded_song">Bài hát đã tải</string>
 </resources>

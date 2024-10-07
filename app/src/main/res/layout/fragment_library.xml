@@ -44,6 +44,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#4DFFFFFF" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +85,7 @@
                             android:layout_marginTop="@dimen/_3sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/nunito_regular"
-                            android:text="54"
+                            android:text="0"
                             android:textColor="#ACB0B8"
                             android:textSize="@dimen/_9ssp" />
 

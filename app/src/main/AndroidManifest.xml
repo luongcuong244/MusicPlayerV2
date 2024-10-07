@@ -59,6 +59,9 @@
             android:name=".ui.screen.hiddensong.HiddenSongActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.screen.downloadedsong.DownloadedSongActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.screen.splash.SplashActivity"
             android:exported="true">
             <intent-filter>

@@ -32,7 +32,7 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
     }
 
     private fun initView() {
-        binding.tvName.text = CurrentUser.getUser()!!.userName
+        binding.tvName.text = CurrentUser.getUser()!!.userName ?: "Unknown"
         Glide.with(requireContext())
             .load(CurrentUser.getUser()!!.avatar)
             .placeholder(R.drawable.bg_default_avatar)
