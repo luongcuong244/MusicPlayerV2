@@ -47,6 +47,7 @@
                 android:fontFamily="@font/nunito_regular"
                 android:hint="@string/enter_your_email"
                 android:maxLines="1"
+                android:text="luongcuong244@gmail.com"
                 android:textColor="@color/white"
                 android:textColorHint="#787B82"
                 android:textSize="@dimen/_13ssp" />
@@ -82,6 +83,7 @@
                 android:fontFamily="@font/nunito_regular"
                 android:hint="@string/enter_your_password"
                 android:maxLines="1"
+                android:text="Matkhau@123"
                 android:textColor="@color/white"
                 android:textColorHint="#787B82"
                 android:textSize="@dimen/_13ssp" />

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.ui.adapter.SongAdapter
 import com.kma.musicplayerv2.ui.bottomsheet.AddToPlaylistBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.FilterByArtistBottomSheet
+import com.kma.musicplayerv2.ui.bottomsheet.PlaylistOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SongOptionBottomSheet
 import com.kma.musicplayerv2.ui.bottomsheet.SortByBottomSheet
 import com.kma.musicplayerv2.ui.core.BaseActivity
@@ -33,7 +35,7 @@ import kotlin.random.Random
 
 class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
     private lateinit var viewPlaylistViewModel: ViewPlaylistViewModel
-    private lateinit var songAdapter: SongAdapter
+    private var songAdapter: SongAdapter? = null
 
     private lateinit var playlist: Playlist
 
@@ -45,45 +47,92 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
         initView()
         setupListeners()
         setupObservers()
+        viewPlaylistViewModel.init(playlist.songs)
+        setupSongAdapter()
 
-        viewPlaylistViewModel.fetchSongsByPlaylist(this, playlist.id, onSuccessful = {
-            setupSongAdapter()
-        })
+        if (playlist.songs.isEmpty()) {
+            binding.tvNoSong.visibility = View.VISIBLE
+            binding.rvSong.visibility = View.GONE
+        }
+//        viewPlaylistViewModel.fetchSongsByPlaylist(this, playlist.id, onSuccessful = {
+//            setupSongAdapter()
+//        })
     }
 
     private fun initView() {
         playlist = intent.getSerializableExtra(Constant.BUNDLE_PLAYLIST) as Playlist
 
         binding.tvPlaylistName.text = playlist.name
-        binding.progressBar.visibility = View.VISIBLE
-        Glide.with(binding.root.context)
-            .load(playlist.image)
-            .listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    binding.progressBar.visibility = View.GONE
-                    return false
-                }
+        if (playlist.songs.isNotEmpty()) {
+            binding.progressBar.visibility = View.VISIBLE
+            Glide.with(binding.root.context)
+                .load(playlist.songs[0].thumbnail)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
 
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Log.d("CHECK_BUG", e.toString())
-                    return false
-                }
-            })
-            .into(binding.ivThumb)
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d("CHECK_BUG", e.toString())
+                        return false
+                    }
+                })
+                .into(binding.ivThumb)
+        }
+        else {
+            binding.progressBar.visibility = View.GONE
+            binding.ivThumb.setImageResource(R.drawable.empty_playlist)
+            // add padding to image view
+            val padding = binding.root.context.resources.getDimension(com.intuit.sdp.R.dimen._10sdp).toInt()
+            binding.ivThumb.setPadding(padding, padding, padding, padding)
+        }
     }
 
     private fun setupListeners() {
+        binding.ivMore.setOnClickListener {
+            val playlistOptionBottomSheet = PlaylistOptionBottomSheet(
+                playlist = playlist,
+                onDeletePlaylist = {
+                    PlaylistRepository.deletePlaylist(
+                        playlistId = it.id,
+                        apiCallback = object : ApiCallback<Void> {
+                            override fun onSuccess(data: Void?) {
+                                Toast.makeText(
+                                    this@ViewPlaylistActivity,
+                                    getString(R.string.delete_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                finish()
+                            }
+
+                            override fun onFailure(message: String) {
+                                Toast.makeText(
+                                    this@ViewPlaylistActivity,
+                                    getString(R.string.delete_failed),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    )
+                }
+            )
+            playlistOptionBottomSheet.show(supportFragmentManager, playlistOptionBottomSheet.tag)
+        }
+
+        if (playlist.songs.isEmpty()) return
+
         binding.llSort.setOnClickListener {
             val bottomSheet = SortByBottomSheet(
                 sortBy = viewPlaylistViewModel.sortBy.value!!,
@@ -99,7 +148,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                 filterByArtists = viewPlaylistViewModel.filterByArtists,
                 onClickApply = {
                     viewPlaylistViewModel.setFilterByArtists(it)
-                    songAdapter.notifyDataSetChanged()
+                    songAdapter?.notifyDataSetChanged()
                 }
             )
             filterByArtistBottomSheet.show(supportFragmentManager, filterByArtistBottomSheet.tag)
@@ -125,7 +174,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
         viewPlaylistViewModel.sortBy.observe(this) {
             binding.tvSort.text = getString(it.textId)
             viewPlaylistViewModel.sortSongs()
-            songAdapter.notifyDataSetChanged()
+            songAdapter?.notifyDataSetChanged()
         }
         viewPlaylistViewModel.totalSongs.observe(this) {
             binding.tvTotalSong.text =
@@ -150,12 +199,16 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                                 override fun onSuccess(data: Void?) {
                                     viewPlaylistViewModel.songs.remove(it)
                                     viewPlaylistViewModel.tempSongs.remove(it)
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                     Toast.makeText(
                                         this@ViewPlaylistActivity,
                                         getString(R.string.delete_successfully),
                                         Toast.LENGTH_SHORT
                                     ).show()
+
+                                    if (viewPlaylistViewModel.tempSongs.isEmpty()) {
+                                        finish()
+                                    }
                                 }
 
                                 override fun onFailure(message: String) {
@@ -174,7 +227,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             song = song,
                             onDownloadSuccess = {
                                 song.isDownloaded = true
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
                                 Toast.makeText(
                                     this,
                                     getString(R.string.download_successfully),
@@ -190,23 +243,21 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             }
                         )
                     },
-                    onClickAddToFavorite = {
-                        if (it.isFavourite) {
+                    onClickAddToFavorite = { song, isFavourite ->
+                        if (isFavourite) {
                             viewPlaylistViewModel.unFavouriteSong(
                                 context = this,
-                                song = it,
+                                song = song,
                                 onUnFavouriteSuccess = {
-                                    it.isFavourite = false
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         } else {
                             viewPlaylistViewModel.addFavoriteSong(
                                 context = this,
-                                song = it,
+                                song = song,
                                 onAddFavoriteSuccess = {
-                                    it.isFavourite = true
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         }
@@ -224,23 +275,16 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                             context = this,
                             song = it,
                             onHideSuccess = {
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
+
+                                if (viewPlaylistViewModel.tempSongs.isEmpty()) {
+                                    finish()
+                                }
                             }
                         )
                     }
                 )
                 bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-            },
-            onClickUnFavourite = { song, position ->
-                viewPlaylistViewModel.unFavouriteSong(
-                    context = this,
-                    song = song,
-                    onUnFavouriteSuccess = {
-                        song.isFavourite = false
-                        songAdapter.notifyDataSetChanged()
-                    }
-                )
-                songAdapter.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(
@@ -256,6 +300,7 @@ class ViewPlaylistActivity : BaseActivity<ActivityViewPlaylistBinding>() {
                         )
                     },
                 )
+                PlaylistRepository.triggerRecentlyPlaylist(playlist.id, playlist.name)
             }
         )
         binding.rvSong.apply {

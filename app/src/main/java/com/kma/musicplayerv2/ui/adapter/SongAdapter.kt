@@ -17,7 +17,6 @@ import com.kma.musicplayerv2.model.Song
 class SongAdapter(
     private val songs: List<Song>,
     private val onClickMore: (Song) -> Unit,
-    private val onClickUnFavourite: (Song, Int) -> Unit,
     private val onClickItem: (Song) -> Unit
 ) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
@@ -51,11 +50,7 @@ class SongAdapter(
             } else {
                 View.GONE
             }
-            binding.ivFavourite.visibility = if (song.isFavourite) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            binding.ivFavourite.visibility = View.GONE
 
             binding.ivMore.setOnClickListener {
                 onClickMore(song)
@@ -63,10 +58,6 @@ class SongAdapter(
 
             binding.root.setOnClickListener {
                 onClickItem(song)
-            }
-
-            binding.ivFavourite.setOnClickListener {
-                onClickUnFavourite(song, adapterPosition)
             }
 
             binding.progressBar.visibility = View.VISIBLE

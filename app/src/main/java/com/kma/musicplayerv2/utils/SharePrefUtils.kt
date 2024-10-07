@@ -12,18 +12,18 @@ object SharePrefUtils {
         }
     }
 
-    fun saveSongIds(songIds: List<Long>): Boolean {
+    fun saveSongIds(songIds: List<String>): Boolean {
         val editor = mSharePref!!.edit()
         editor.putString("songIds", songIds.joinTo(StringBuilder(), ",").toString())
         return editor.commit()
     }
 
-    fun getSongIds(): List<Long>? {
+    fun getSongIds(): List<String>? {
         val songIds = mSharePref!!.getString("songIds", "")
         if (songIds.isNullOrEmpty()) {
             return null
         }
-        return songIds.split(",").map { it.toLong() }
+        return songIds.split(",").map { it }
     }
 
     fun saveCurrentSongIndex(index: Int): Boolean {
@@ -44,5 +44,15 @@ object SharePrefUtils {
 
     fun getAccessToken(): String? {
         return mSharePref!!.getString("accessToken", null)
+    }
+
+    fun saveRefreshToken(refreshToken: String): Boolean {
+        val editor = mSharePref!!.edit()
+        editor.putString("refreshToken", refreshToken)
+        return editor.commit()
+    }
+
+    fun getRefreshToken(): String? {
+        return mSharePref!!.getString("refreshToken", null)
     }
 }

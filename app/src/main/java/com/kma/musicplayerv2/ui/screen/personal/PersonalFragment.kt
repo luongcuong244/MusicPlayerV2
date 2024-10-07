@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.bumptech.glide.Glide
 import com.kma.musicplayerv2.BuildConfig
 import com.kma.musicplayerv2.ui.core.BaseFragment
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.FragmentPersonalBinding
+import com.kma.musicplayerv2.globalstate.CurrentUser
 import com.kma.musicplayerv2.ui.dialog.ChangeUserNameDialog
 import com.kma.musicplayerv2.ui.dialog.RatingDialog
 import com.kma.musicplayerv2.ui.screen.addwidget.AddWidgetActivity
 import com.kma.musicplayerv2.ui.screen.hiddensong.HiddenSongActivity
 import com.kma.musicplayerv2.ui.screen.language.LanguageActivity
 import com.kma.musicplayerv2.ui.screen.policy.PolicyActivity
+import com.kma.musicplayerv2.ui.screen.signin.SigninActivity
 import com.kma.musicplayerv2.utils.PermissionUtils
+import com.kma.musicplayerv2.utils.SharePrefUtils
 
 class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
     private val REQUEST_CODE_PICK_IMAGE = 100
@@ -23,7 +27,16 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         setupListeners()
+    }
+
+    private fun initView() {
+        binding.tvName.text = CurrentUser.getUser()!!.userName
+        Glide.with(requireContext())
+            .load(CurrentUser.getUser()!!.avatar)
+            .placeholder(R.drawable.bg_default_avatar)
+            .into(binding.ivAvatar)
     }
 
     private fun setupListeners() {
@@ -63,6 +76,13 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
         }
         binding.llPolicy.setOnClickListener {
             showActivity(PolicyActivity::class.java)
+        }
+        binding.rlSignOut.setOnClickListener {
+            CurrentUser.setUser(null)
+            SharePrefUtils.saveAccessToken("")
+            SharePrefUtils.saveRefreshToken("")
+            showActivity(SigninActivity::class.java)
+            requireActivity().finishAffinity()
         }
     }
 

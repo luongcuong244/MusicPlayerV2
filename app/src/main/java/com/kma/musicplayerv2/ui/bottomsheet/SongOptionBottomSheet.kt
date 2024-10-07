@@ -14,19 +14,25 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.BottomSheetSongOptionBinding
 import com.kma.musicplayerv2.model.Song
+import com.kma.musicplayerv2.network.common.ApiCallback
+import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SongOptionBottomSheet(
     private val song: Song,
     private val onClickShare: ((Song) -> Unit)? = null,
     private val onDeleteFromPlaylist: ((Song) -> Unit)? = null,
     private val onClickDownload: ((Song) -> Unit)? = null,
-    private val onClickAddToFavorite: ((Song) -> Unit)? = null,
+    private val onClickAddToFavorite: ((Song, Boolean) -> Unit)? = null,
     private val onClickAddToPlaylist: ((Song) -> Unit)? = null,
     private val onClickPlayNext: ((Song) -> Unit)? = null,
     private val onClickHideSong: ((Song) -> Unit)? = null,
 ) : BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetSongOptionBinding
+    private var isFavorite = false
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
@@ -88,13 +94,25 @@ class SongOptionBottomSheet(
                 }
             })
             .into(binding.ivThumb)
-        if (song.isFavourite) {
-            binding.ivFavourite.setImageResource(R.drawable.ic_favourite)
-            binding.tvFavourite.text = getString(R.string.added_to_favourite_list)
-        } else {
-            binding.ivFavourite.setImageResource(R.drawable.ic_not_favourite)
-            binding.tvFavourite.text = getString(R.string.add_to_favourite_list)
-        }
+        SongRepository.isFavoriteSong(
+            song.id,
+            object : ApiCallback<Boolean> {
+                override fun onSuccess(data: Boolean?) {
+                    if (data == true) {
+                        binding.ivFavourite.setImageResource(R.drawable.ic_favourite)
+                        binding.tvFavourite.text = getString(R.string.added_to_favourite_list)
+                    } else {
+                        binding.ivFavourite.setImageResource(R.drawable.ic_not_favourite)
+                        binding.tvFavourite.text = getString(R.string.add_to_favourite_list)
+                    }
+                    isFavorite = data ?: false
+                }
+
+                override fun onFailure(message: String) {
+                    Log.d("CHECK_BUG", message)
+                }
+            }
+        )
     }
 
     private fun setupListeners() {
@@ -111,7 +129,7 @@ class SongOptionBottomSheet(
             dismiss()
         }
         binding.llAddToFavourite.setOnClickListener {
-            onClickAddToFavorite?.invoke(song)
+            onClickAddToFavorite?.invoke(song, isFavorite)
             dismiss()
         }
         binding.llAddToPlaylist.setOnClickListener {

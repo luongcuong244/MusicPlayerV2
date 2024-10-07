@@ -13,6 +13,7 @@ import com.kma.musicplayerv2.model.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -24,8 +25,9 @@ import java.io.IOException
 
 object FileUtils {
     const val APP_FOLDER_NAME = "MusicPlayerV2"
-    const val CACHE_FOLDER_NAME = "SongCache"
-    const val PRECACHED_FOLDER_NAME = "SongPrecache"
+    const val PRECACHE_FOLDER_NAME = "Precache"
+
+    private val localSongs = mutableListOf<Song>()
 
     private fun getMediaDurationInSeconds(context: Context, path: String): Long {
         try {
@@ -59,19 +61,13 @@ object FileUtils {
         )
     }
 
-    fun isSongDownloaded(context: Context, song: Song): Boolean {
-        val directoryPath = getAppCacheDir(context)
-        val fileName = generateFileName(song)
-        val file = File(directoryPath, fileName)
-        return file.exists()
-    }
-
     fun generateFileName(song: Song): String {
         return song.title + "-" + song.id + ".mp3"
     }
 
     fun getDownloadedSongs(context: Context): List<File> {
-        val directory = getAppCacheDir(context)
+        val directoryPath = getDirectoryPath(context) ?: return emptyList()
+        val directory = File(directoryPath)
         if (!directory.exists()) {
             return emptyList()
         }
@@ -92,7 +88,7 @@ object FileUtils {
         onDownloadFailed: () -> Unit,
     ) {
         try {
-            val file = File(getAppCacheDir(context), fileName)
+            val file = File(context.cacheDir, fileName)
             if (file.exists()) {
                 onDownloadSuccess.invoke(file)
                 return
@@ -138,14 +134,6 @@ object FileUtils {
             e.printStackTrace()
             onDownloadFailed.invoke()
         }
-    }
-
-    private fun getAppCacheDir(context: Context): File {
-        val directory = File(context.cacheDir, CACHE_FOLDER_NAME)
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
-        return directory
     }
 
     fun getUriFromFile(context: Context, file: File): Uri {
@@ -230,5 +218,68 @@ object FileUtils {
         return if (dotIndex > 0 && dotIndex < fileName.length - 1) {
             fileName.substring(dotIndex)
         } else ""
+    }
+
+    suspend fun saveVideoToCacheDir(
+        context: Context,
+        url: String,
+        fileName: String
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            val file = File(getPreCacheDirectory(context), fileName)
+            if (file.exists()) {
+                return@withContext true
+            }
+
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url(url)
+                .build()
+
+            try {
+                val response = client.newCall(request).execute()
+
+                if (!response.isSuccessful) {
+                    return@withContext false
+                }
+
+                val responseBody = response.body ?: throw IOException("Response body is null")
+                val inputStream = responseBody.byteStream()
+                val outputStream = FileOutputStream(file)
+
+                val buffer = ByteArray(4096)
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+                outputStream.close()
+                inputStream.close()
+
+                return@withContext true
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    fun getCachedVideoByName(context: Context, fileName: String): File? {
+        val directory = getPreCacheDirectory(context)
+        val files = directory.listFiles()
+        if (files != null) {
+            for (file in files) {
+                if (file.name == fileName) {
+                    return file
+                }
+            }
+        }
+        return null
+    }
+
+    private fun getPreCacheDirectory(context: Context): File {
+        val directory = File(context.cacheDir, PRECACHE_FOLDER_NAME)
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        return directory
     }
 }

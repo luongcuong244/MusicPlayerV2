@@ -57,7 +57,7 @@ class SelectableSongAdapter(
         fun bind(position: Int) {
             val song = songs[position].song
             binding.tvTitle.text = song.title
-            binding.tvArtistAndDuration.text = song.artist.name
+            binding.tvArtistAndDuration.text = song.artist?.name ?: "Unknown Artist"
 
             Glide.with(binding.root)
                 .load(song.thumbnail)

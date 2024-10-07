@@ -57,7 +57,7 @@ class BottomMiniAudioPlayer : FrameLayout {
             songService.playNext()
         }
         binding.root.setOnClickListener {
-            activity.showActivity(PlaySongActivity::class.java, Bundle().apply {
+            activity.showActivityForResult(PlaySongActivity::class.java, 100, Bundle().apply {
                 putBoolean(Constant.BUNDLE_IS_FROM_BOTTOM_MINI_PLAYER, true)
             })
         }

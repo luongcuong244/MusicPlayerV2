@@ -43,33 +43,42 @@ class PlaylistAdapter(
     inner class PlaylistViewHolder(val binding: ItemPlaylistBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindItem(playlist: Playlist) {
             binding.tvTitle.text = playlist.name
-            binding.tvNumberOfSongs.text = "${playlist.totalSong} ${binding.root.context.getString(R.string.song)}"
-            binding.progressBar.visibility = View.VISIBLE
-            Glide.with(binding.root.context)
-                .load(playlist.image)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        model: Any,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        binding.progressBar.visibility = View.GONE
-                        return false
-                    }
+            binding.tvNumberOfSongs.text = "${playlist.songs.size} ${binding.root.context.getString(R.string.song)}"
+            if (playlist.songs.isNotEmpty()) {
+                binding.progressBar.visibility = View.VISIBLE
+                Glide.with(binding.root.context)
+                    .load(playlist.songs[0].thumbnail)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            model: Any,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            binding.progressBar.visibility = View.GONE
+                            return false
+                        }
 
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.d("CHECK_BUG", e.toString())
-                        return false
-                    }
-                })
-                .into(binding.ivThumb)
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            Log.d("CHECK_BUG", e.toString())
+                            return false
+                        }
+                    })
+                    .into(binding.ivThumb)
+            }
+            else {
+                binding.progressBar.visibility = View.GONE
+                binding.ivThumb.setImageResource(R.drawable.empty_playlist)
+                // add padding to image view
+                val padding = binding.root.context.resources.getDimension(com.intuit.sdp.R.dimen._10sdp).toInt()
+                binding.ivThumb.setPadding(padding, padding, padding, padding)
+            }
             binding.llItem.setOnClickListener {
                 onClickItem(playlist)
             }

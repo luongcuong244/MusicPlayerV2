@@ -27,7 +27,7 @@ import kotlin.random.Random
 class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBinding>() {
 
     private lateinit var listenSongRecentlyViewModel: ListenSongRecentlyViewModel
-    private lateinit var songAdapter: SongAdapter
+    private var songAdapter: SongAdapter? = null
 
 
     override fun getContentView(): Int = R.layout.fragment_listen_song_recently
@@ -58,7 +58,7 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                 filterByArtists = listenSongRecentlyViewModel.filterByArtists,
                 onClickApply = {
                     listenSongRecentlyViewModel.setFilterByArtists(it)
-                    songAdapter.notifyDataSetChanged()
+                    songAdapter?.notifyDataSetChanged()
                 }
             )
             filterByArtistBottomSheet.show(childFragmentManager, filterByArtistBottomSheet.tag)
@@ -84,7 +84,7 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
         listenSongRecentlyViewModel.sortBy.observe(requireActivity()) {
             binding.tvSort.text = getString(it.textId)
             listenSongRecentlyViewModel.sortSongs()
-            songAdapter.notifyDataSetChanged()
+            songAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -103,7 +103,7 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                             song = song,
                             onDownloadSuccess = {
                                 song.isDownloaded = true
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
                                 Toast.makeText(
                                     requireActivity(),
                                     getString(R.string.download_successfully),
@@ -119,14 +119,13 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                             }
                         )
                     },
-                    onClickAddToFavorite = {
-                        if (it.isFavourite) {
+                    onClickAddToFavorite = { song, isFavourite ->
+                        if (isFavourite) {
                             listenSongRecentlyViewModel.unFavouriteSong(
                                 context = requireActivity(),
-                                song = it,
+                                song = song,
                                 onUnFavouriteSuccess = {
-                                    it.isFavourite = false
-                                    songAdapter.notifyDataSetChanged()
+                                    songAdapter?.notifyDataSetChanged()
                                 }
                             )
                         }
@@ -150,7 +149,7 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                                                     "Thêm bài hát vào playlist thành công",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
-                                                playlist.totalSong++
+                                                playlist.songs.add(song)
                                             } else {
                                                 Toast.makeText(
                                                     requireActivity(),
@@ -189,23 +188,12 @@ class ListenSongRecentlyFragment : BaseFragment<FragmentListenSongRecentlyBindin
                             context = requireActivity(),
                             song = it,
                             onHideSuccess = {
-                                songAdapter.notifyDataSetChanged()
+                                songAdapter?.notifyDataSetChanged()
                             }
                         )
                     }
                 )
                 bottomSheet.show(childFragmentManager, bottomSheet.tag)
-            },
-            onClickUnFavourite = { song, position ->
-                listenSongRecentlyViewModel.unFavouriteSong(
-                    context = requireActivity(),
-                    song = song,
-                    onUnFavouriteSuccess = {
-                        song.isFavourite = false
-                        songAdapter.notifyDataSetChanged()
-                    }
-                )
-                songAdapter.notifyItemRemoved(position)
             },
             onClickItem = {
                 showActivity(

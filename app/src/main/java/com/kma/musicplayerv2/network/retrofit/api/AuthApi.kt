@@ -10,12 +10,9 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AuthApi {
-    @GET("auth/user/check-existing-user")
-    fun checkExistingUser(@Query("email") email: String): Call<Boolean>
-
-    @POST("auth/user/login")
+    @POST("/api/auth/v1/sign-in")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
-    @POST("auth/user/register")
+    @POST("/api/auth/v1/sign-up")
     fun register(@Body request: RegisterRequest): Call<Boolean>
 }
