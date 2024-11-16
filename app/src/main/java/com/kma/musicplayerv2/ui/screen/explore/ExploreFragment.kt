@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kma.musicplayerv2.ui.core.BaseFragment
 import com.kma.musicplayerv2.R
 import com.kma.musicplayerv2.databinding.FragmentExploreBinding
+import com.kma.musicplayerv2.model.Category
 import com.kma.musicplayerv2.model.Playlist
 import com.kma.musicplayerv2.model.Song
 import com.kma.musicplayerv2.network.common.ApiCallback
@@ -15,6 +16,7 @@ import com.kma.musicplayerv2.network.retrofit.model.SongDto
 import com.kma.musicplayerv2.network.retrofit.repository.ExploreRepository
 import com.kma.musicplayerv2.network.retrofit.repository.PlaylistRepository
 import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
+import com.kma.musicplayerv2.ui.adapter.CategoryAdapter
 import com.kma.musicplayerv2.ui.adapter.ListenRecentlyAdapter
 import com.kma.musicplayerv2.ui.adapter.SongAdapter
 import com.kma.musicplayerv2.ui.bottomsheet.AddToPlaylistBottomSheet
@@ -39,6 +41,8 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>() {
 
     private var songForYouAdapter: SongAdapter? = null
     private val songForYou = mutableListOf<Song>()
+    private var categoryAdapter: CategoryAdapter? = null
+    private val categories = mutableListOf<Category>()
 
     override fun getContentView(): Int = R.layout.fragment_explore
 
@@ -57,6 +61,12 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>() {
                             this@ExploreFragment.songForYou.clear()
                             this@ExploreFragment.songForYou.addAll(songForYou.map { it.toSong() })
                             setupSongForYouAdapter()
+                        }
+                        val categories = response.body()?.data?.categories
+                        if (categories != null) {
+                            this@ExploreFragment.categories.clear()
+                            this@ExploreFragment.categories.addAll(categories.map { it.toCategory() })
+                            setupCategoryAdapter()
                         }
                     }
                 }
@@ -240,6 +250,26 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>() {
             )
         }
         binding.rvSongForYou.layoutManager = LinearLayoutManager(requireActivity())
+    }
+
+    private fun setupCategoryAdapter() {
+        categoryAdapter = CategoryAdapter(
+            requireActivity() as BaseActivity<*>,
+            categories
+        )
+        binding.rvCategory.apply {
+            adapter = categoryAdapter
+        }
+        if (binding.rvCategory.itemDecorationCount == 0) {
+            binding.rvCategory.addItemDecoration(
+                VerticalSpaceItemDecoration(
+                    this.resources.getDimension(
+                        com.intuit.sdp.R.dimen._22sdp
+                    ).toInt()
+                )
+            )
+        }
+        binding.rvCategory.layoutManager = LinearLayoutManager(requireActivity())
     }
 
     private fun setupListenRecentlyAdapter() {

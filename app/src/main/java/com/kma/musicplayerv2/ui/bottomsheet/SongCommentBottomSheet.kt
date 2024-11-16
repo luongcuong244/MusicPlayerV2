@@ -11,7 +11,7 @@ import com.kma.musicplayerv2.databinding.BottomSheetSongCommentBinding
 import com.kma.musicplayerv2.model.Song
 import com.kma.musicplayerv2.model.SongComment
 import com.kma.musicplayerv2.network.common.ApiCallback
-import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
+import com.kma.musicplayerv2.network.retrofit.repository.CommentRepository
 import com.kma.musicplayerv2.ui.adapter.SongCommentAdapter
 import com.kma.musicplayerv2.ui.customview.VerticalSpaceItemDecoration
 
@@ -29,7 +29,7 @@ class SongCommentBottomSheet(
         binding = BottomSheetSongCommentBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
 
-        SongRepository.getCommentsBySongId(
+        CommentRepository.getCommentBySongId(
             song.id,
             object : ApiCallback<List<SongComment>> {
                 override fun onSuccess(data: List<SongComment>?) {
@@ -69,7 +69,7 @@ class SongCommentBottomSheet(
                 Toast.makeText(context, getString(R.string.comment_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            SongRepository.addComment(
+            CommentRepository.addComment(
                 song.id,
                 text,
                 object : ApiCallback<SongComment> {

@@ -3,11 +3,9 @@ package com.kma.musicplayerv2.network.retrofit.repository
 import com.kma.musicplayerv2.globalstate.CurrentUser
 import com.kma.musicplayerv2.network.retrofit.RetrofitClient
 import com.kma.musicplayerv2.network.retrofit.api.SongApi
-import com.kma.musicplayerv2.model.Artist
 import com.kma.musicplayerv2.model.Song
 import com.kma.musicplayerv2.model.SongComment
 import com.kma.musicplayerv2.network.common.ApiCallback
-import com.kma.musicplayerv2.network.retrofit.model.AddCommentRequest
 import com.kma.musicplayerv2.network.retrofit.model.AddFavouriteSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.AddFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetAllSongResponse
@@ -15,13 +13,13 @@ import com.kma.musicplayerv2.network.retrofit.model.GetFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetHiddenSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.HideSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.HideSongResponse
+import com.kma.musicplayerv2.network.retrofit.model.IncreaseViewRequest
 import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
 import com.kma.musicplayerv2.network.retrofit.model.SongDto
 import com.kma.musicplayerv2.network.retrofit.model.UnhideSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.UnhideSongResponse
-import com.kma.musicplayerv2.network.retrofit.repository.SongRepository.getAllSongs
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,7 +52,7 @@ object SongRepository {
                 override fun onResponse(call: Call<GetFavouriteSongResponse>, response: Response<GetFavouriteSongResponse>) {
                     val songs = response.body()?.data
                     if (songs != null) {
-                        apiCallback.onSuccess(songs.map { it["song"]!!.toSong() })
+                        apiCallback.onSuccess(songs.filter { it["song"] != null }.map { it["song"]!!.toSong() })
                     } else {
                         apiCallback.onFailure("Unknown error")
                     }
@@ -294,36 +292,6 @@ object SongRepository {
         )
     }
 
-    fun addComment(songId: String, content: String, apiCallback: ApiCallback<SongComment>) {
-//        apiCallback.onSuccess(
-//            SongComment(
-//                id = 1,
-//                songId = songId,
-//                content = content,
-//                userId = 1,
-//                userAvatar = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/f/0/1/bf0182328238f2a252496a63e51f1f74.jpg",
-//                userName = "Là Tôi Đó",
-//                createdAt = "Vừa xong"
-//            )
-//        )
-        return
-        songApi.addComment(AddCommentRequest(songId, content)).enqueue(
-            object : Callback<SongCommentDto> {
-                override fun onResponse(call: Call<SongCommentDto>, response: Response<SongCommentDto>) {
-                    if (response.body() != null) {
-                        apiCallback.onSuccess(response.body()!!.toSongComment())
-                    } else {
-                        apiCallback.onFailure("Unknown error")
-                    }
-                }
-
-                override fun onFailure(call: Call<SongCommentDto>, t: Throwable) {
-                    apiCallback.onFailure(t.message ?: "Unknown error")
-                }
-            }
-        )
-    }
-
     fun getSongsByPlaylistId(playlistId: String, apiCallback: ApiCallback<List<Song>>) {
 //        apiCallback.onSuccess(
 //            listOf(
@@ -439,6 +407,18 @@ object SongRepository {
 
                 override fun onFailure(call: Call<List<SongDto>>, t: Throwable) {
                     apiCallback.onFailure(t.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    fun increaseView(song: Song) {
+        songApi.increaseView(IncreaseViewRequest(CurrentUser.getUser()!!.id, song.id)).enqueue(
+            object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
                 }
             }
         )

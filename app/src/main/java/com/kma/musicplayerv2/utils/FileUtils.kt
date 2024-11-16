@@ -26,24 +26,6 @@ import java.io.IOException
 object FileUtils {
     const val APP_FOLDER_NAME = "MusicPlayerV2"
     const val PRECACHE_FOLDER_NAME = "Precache"
-
-    private val localSongs = mutableListOf<Song>()
-
-    private fun getMediaDurationInSeconds(context: Context, path: String): Long {
-        try {
-            val file = File(path)
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(context, Uri.fromFile(file))
-            val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            val timeInMillisec = time?.toLong() ?: 0
-            retriever.release()
-            return timeInMillisec / 1000
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return 0
-    }
-
     fun saveSongToCacheDir(
         context: Context,
         song: Song,
@@ -62,22 +44,21 @@ object FileUtils {
     }
 
     fun generateFileName(song: Song): String {
-        return song.title + "-" + song.id + ".mp3"
+        return song.title + "#" + song.id + ".mp3"
     }
 
     fun getDownloadedSongs(context: Context): List<File> {
-        val directoryPath = getDirectoryPath(context) ?: return emptyList()
-        val directory = File(directoryPath)
+        val directory = getAppCacheFolder(context)
         if (!directory.exists()) {
             return emptyList()
         }
         return directory.listFiles()?.toList() ?: emptyList()
     }
 
-    fun getSongIdFromFile(file: File): Long {
+    fun getSongIdFromFile(file: File): String {
         val fileName = file.name
-        val idString = fileName.substringAfterLast("-").substringBeforeLast(".mp3")
-        return idString.toLong()
+        val idString = fileName.substringAfterLast("#").substringBeforeLast(".mp3")
+        return idString
     }
 
     private fun saveMp3ToCacheDir(
@@ -88,7 +69,7 @@ object FileUtils {
         onDownloadFailed: () -> Unit,
     ) {
         try {
-            val file = File(context.cacheDir, fileName)
+            val file = File(getAppCacheFolder(context), fileName)
             if (file.exists()) {
                 onDownloadSuccess.invoke(file)
                 return
@@ -140,26 +121,6 @@ object FileUtils {
         return FileProvider.getUriForFile(context, context.packageName + ".provider", file)
     }
 
-    fun getAudioMediaContentUri(context: Context, filePath: String): Uri? {
-        val contentResolver: ContentResolver = context.contentResolver
-        val uri: Uri = MediaStore.Files.getContentUri("external")
-
-        val projection = arrayOf(MediaStore.Files.FileColumns._ID)
-        val selection = "${MediaStore.Files.FileColumns.DATA} = ?"
-        val selectionArgs = arrayOf(filePath)
-        val sortOrder = null // You can specify sorting order if needed
-
-        contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)
-                val id = cursor.getLong(columnIndex)
-                val contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                return Uri.withAppendedPath(contentUri, id.toString())
-            }
-        }
-        return null
-    }
-
     fun addAudioToMediaStore(context: Context, filePath: String) {
         val current = System.currentTimeMillis()
         val contentValues = ContentValues().apply {
@@ -170,6 +131,14 @@ object FileUtils {
         }
         val contentResolver = context.contentResolver
         contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
+    }
+
+    fun getAppCacheFolder(context: Context): File {
+        val cacheDir = File(context.cacheDir, APP_FOLDER_NAME)
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs()
+        }
+        return cacheDir
     }
 
     fun getDirectoryPath(context: Context): String? {
@@ -185,32 +154,6 @@ object FileUtils {
         } catch (e: Exception) {
             context.filesDir.absolutePath // use internal storage if external storage is not available
         }
-    }
-
-    fun renameFile(oldFilePath: String, newName: String): File? {
-        val oldFile = File(oldFilePath)
-        return if (oldFile.exists()) {
-            val parentDirectory = oldFile.parent
-            val extension = getExtension(oldFile.name)
-            val newFilePath = parentDirectory + File.separator + newName + extension
-            val newFile = File(newFilePath)
-            if(newFile.exists()){
-                null
-            } else {
-                oldFile.renameTo(newFile)
-                newFile
-            }
-        } else {
-            null
-        }
-    }
-
-    fun deleteFile(path: String) : Boolean {
-        val file = File(path)
-        if(!file.exists()){
-            return false
-        }
-        return File(path).delete()
     }
 
     private fun getExtension(fileName: String): String {

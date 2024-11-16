@@ -109,6 +109,7 @@ class PlaySongService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("PlaySongService", "onStartCommand")
+        _audioPlayerManager = AudioPlayerManager(this@PlaySongService, songs)
         val songIds = SharePrefUtils.getSongIds()
         if (songIds.isNullOrEmpty()) {
             stopSelf()
@@ -126,7 +127,6 @@ class PlaySongService : Service() {
                     songs.addAll(data)
                     currentIndex = Math.max(0, currentSongIndex)
 
-                    _audioPlayerManager = AudioPlayerManager(this@PlaySongService, songs)
                     _audioPlayerManager?.simpleExoPlayer?.addListener(object : Player.EventListener {
                         override fun onPlaybackStateChanged(playbackState: Int) {
                             super.onPlaybackStateChanged(playbackState)
@@ -261,9 +261,15 @@ class PlaySongService : Service() {
     }
 
     fun playAt(index: Int) {
-        updateCurrentIndexValue(index)
-        _audioPlayerManager?.play(currentIndex)
-        isPlaying.postValue(true)
+        try {
+            updateCurrentIndexValue(index)
+            _audioPlayerManager?.play(currentIndex)
+            isPlaying.postValue(true)
+
+            SongRepository.increaseView(songs[currentIndex])
+        } catch (e: Exception) {
+            Log.d("PlaySongService", "playAt: ${e.message}")
+        }
     }
 
     fun setPlayerAt(index: Int) {

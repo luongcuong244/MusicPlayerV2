@@ -32,22 +32,23 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4DFFFFFF"
+            android:layout_marginHorizontal="@dimen/_13sdp"
+            android:layout_marginTop="@dimen/_13sdp"/>
+
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingHorizontal="@dimen/_13sdp"
-            android:paddingTop="@dimen/_13sdp">
+            android:paddingHorizontal="@dimen/_13sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#4DFFFFFF" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -93,20 +94,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_22sdp"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="@string/chill"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_16ssp" />
-
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_chill"
+                    android:id="@+id/rv_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp" />
+                    android:layout_marginVertical="@dimen/_22sdp" />
 
             </LinearLayout>
 

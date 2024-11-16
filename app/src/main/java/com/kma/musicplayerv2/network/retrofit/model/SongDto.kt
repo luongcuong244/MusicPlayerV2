@@ -12,7 +12,7 @@ data class SongDto(
     @SerializedName("image_url") val imageUrl: String,
     @SerializedName("title") val title: String,
     @SerializedName("file_url") val fileUrl: String,
-    @SerializedName("video_url") val videoUrl: String,
+    @SerializedName("video_url") val videoUrl: String?,
     @SerializedName("views") val views: Long,
     @SerializedName("favorites") val favorites: Long,
     @SerializedName("Album") val album: AlbumDto?,
@@ -26,7 +26,7 @@ data class SongDto(
             artist = album?.artist?.toArtist() ?: Artist("", "Unknown Artist", ""),
             thumbnail = imageUrl.replace("localhost", ServerAddress.SERVER_IP),
             path = fileUrl.replace("localhost", ServerAddress.SERVER_IP),
-            videoUrl = videoUrl.replace("localhost", ServerAddress.SERVER_IP),
+            videoUrl = videoUrl?.replace("localhost", ServerAddress.SERVER_IP),
             createdTime = createdAt.time,
         )
     }

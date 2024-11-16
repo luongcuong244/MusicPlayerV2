@@ -8,6 +8,7 @@ import com.kma.musicplayerv2.network.retrofit.model.GetFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.GetHiddenSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.HideSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.HideSongResponse
+import com.kma.musicplayerv2.network.retrofit.model.IncreaseViewRequest
 import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongRequest
 import com.kma.musicplayerv2.network.retrofit.model.RemoveFavouriteSongResponse
 import com.kma.musicplayerv2.network.retrofit.model.SongCommentDto
@@ -46,14 +47,14 @@ interface SongApi {
     @POST("/api/song/v1/unhide-songs")
     fun unhideSongs(@Body request: UnhideSongRequest): Call<UnhideSongResponse>
 
+    @POST("/api/song/v1/play")
+    fun increaseView(@Body request: IncreaseViewRequest): Call<Void>
+
     @GET
     fun getSongsById(songIds: List<String>): Call<List<SongDto>>
 
     @GET
     fun getCommentsBySongId(songId: String): Call<List<SongCommentDto>>
-
-    @POST("app/add-comment")
-    fun addComment(@Body request: AddCommentRequest): Call<SongCommentDto>
 
     @GET
     fun getSongsByPlaylistId(playlistId: String): Call<List<SongDto>>

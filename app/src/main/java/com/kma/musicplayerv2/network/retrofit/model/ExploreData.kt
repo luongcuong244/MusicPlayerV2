@@ -4,4 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ExploreData(
     @SerializedName("songForYou") val songForYou: List<SongDto>,
+    @SerializedName("category") val categories: List<CategoryDto>,
+    @SerializedName("ablum") val album: List<AlbumDto>,
 )

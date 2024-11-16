@@ -1,69 +1,66 @@
 package com.kma.musicplayerv2.ui.adapter
 
-import android.graphics.drawable.Drawable
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.kma.musicplayerv2.databinding.ItemCategoryBinding
-import com.kma.musicplayerv2.model.Album
+import com.kma.musicplayerv2.model.Category
+import com.kma.musicplayerv2.ui.core.BaseActivity
+import com.kma.musicplayerv2.ui.customview.HorizontalSpaceItemDecoration
+import com.kma.musicplayerv2.ui.screen.viewalbum.ViewAlbumActivity
+import com.kma.musicplayerv2.utils.Constant
 
 class CategoryAdapter(
-    private val albums: List<Album>,
-    private val onClickItem: (Album) -> Unit,
-) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-            val binding = ItemCategoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
+    private val activity: BaseActivity<*>,
+    private val categories: List<Category>,
+): RecyclerView.Adapter<CategoryAdapter.AlbumViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
+        val binding = ItemCategoryBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return AlbumViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
+        holder.bind(categories[position])
+    }
+
+    override fun getItemCount(): Int {
+        return categories.size
+    }
+
+    inner class AlbumViewHolder(val binding: ItemCategoryBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(category: Category) {
+            binding.tvTitle.text = category.name
+
+            val albumAdapter = AlbumAdapter(
+                category.albums
+            ) {
+                // on click
+                activity.showActivity(ViewAlbumActivity::class.java, Bundle().apply {
+                    putSerializable(Constant.BUNDLE_ALBUM, it)
+                })
+            }
+            binding.rvAlbum.adapter = albumAdapter
+            binding.rvAlbum.layoutManager = LinearLayoutManager(
+                binding.root.context,
+                LinearLayoutManager.HORIZONTAL,
                 false
             )
-            return CategoryViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-            holder.bind(albums[position])
-        }
-
-        override fun getItemCount(): Int {
-            return albums.size
-        }
-
-        inner class CategoryViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
-            fun bind(album: Album) {
-                binding.tvTitle.text = album.description
-                binding.progressBar.visibility = View.VISIBLE
-                Glide.with(binding.root.context)
-                    .load(album.thumbnail)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onResourceReady(
-                            resource: Drawable,
-                            model: Any,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            binding.progressBar.visibility = View.GONE
-                            return false
-                        }
-
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            Log.d("CHECK_BUG", e.toString())
-                            return false
-                        }
-                    })
-                    .into(binding.ivThumb)
+            // add spacing
+            if (binding.rvAlbum.itemDecorationCount == 0) {
+                binding.rvAlbum.addItemDecoration(
+                    HorizontalSpaceItemDecoration(
+                        binding.root.context.resources.getDimension(
+                            com.intuit.sdp.R.dimen._13sdp
+                        ).toInt()
+                    )
+                )
             }
         }
+    }
 }

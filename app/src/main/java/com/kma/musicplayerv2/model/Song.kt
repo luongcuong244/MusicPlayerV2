@@ -9,7 +9,7 @@ data class Song(
     val artist: Artist,
     val path: String,
     val thumbnail: String,
-    val videoUrl: String,
+    val videoUrl: String? = null,
     val createdTime: Long,
     var isDownloaded: Boolean = false,
     var isPremium: Boolean = false

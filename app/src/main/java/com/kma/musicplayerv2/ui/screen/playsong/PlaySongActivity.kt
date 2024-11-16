@@ -134,11 +134,6 @@ class PlaySongActivity : BaseActivity<ActivityPlaySongBinding>() {
                 val currentSongIndex = songService?.songs?.lastIndex
                 songService?.playAt(currentSongIndex ?: 0)
             }
-            videoPlayer = VideoPlayer(
-                context = this,
-                videoView1 = findViewById(R.id.surface_view),
-            )
-            videoPlayer.play(this)
         } else {
             playerView.showController()
         }

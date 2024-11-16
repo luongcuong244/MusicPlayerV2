@@ -8,12 +8,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_gradient_v2">
 
-        <SurfaceView
-            android:id="@+id/surface_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparent" />
-
         <LinearLayout
             android:id="@+id/audio_controller_root"
             android:layout_width="match_parent"

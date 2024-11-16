@@ -1,4 +1,4 @@
-package com.kma.musicplayerv2.ui.screen.downloadedsong
+package com.kma.musicplayerv2.ui.screen.viewalbum
 
 import android.content.Context
 import android.widget.Toast
@@ -10,9 +10,8 @@ import com.kma.musicplayerv2.model.Song
 import com.kma.musicplayerv2.model.SortType
 import com.kma.musicplayerv2.network.common.ApiCallback
 import com.kma.musicplayerv2.network.retrofit.repository.SongRepository
-import com.kma.musicplayerv2.utils.FileUtils
 
-class DownloadedSongViewModel : ViewModel() {
+class ViewAlbumViewModel : ViewModel() {
     val songs = mutableListOf<Song>()
     val tempSongs = mutableListOf<Song>()
     val filterByArtists = mutableListOf<Artist>()
@@ -23,29 +22,13 @@ class DownloadedSongViewModel : ViewModel() {
     private val _sortBy = MutableLiveData(SortType.NEWEST)
     val sortBy: LiveData<SortType> = _sortBy
 
-    fun fetchDownloadedSongs(context: Context, onSuccessful: () -> Unit) {
-        val ids = FileUtils.getDownloadedSongs(context).map { FileUtils.getSongIdFromFile(it) }
-        SongRepository.getSongsById(
-            ids,
-            object : ApiCallback<List<Song>> {
-                override fun onSuccess(data: List<Song>?) {
-                    if (data == null) {
-                        return
-                    }
-                    songs.clear()
-                    songs.addAll(data)
-                    tempSongs.clear()
-                    tempSongs.addAll(data)
-                    sortSongs()
-                    _totalSongs.value = tempSongs.size
-                    onSuccessful()
-                }
-
-                override fun onFailure(message: String) {
-                    Toast.makeText(context, "Failed to fetch downloaded songs: $message", Toast.LENGTH_SHORT).show()
-                }
-            }
-        )
+    fun init(songs: List<Song>) {
+        this.songs.clear()
+        this.songs.addAll(songs)
+        tempSongs.clear()
+        tempSongs.addAll(songs)
+        sortSongs()
+        _totalSongs.value = tempSongs.size
     }
 
     fun sortSongs() {
@@ -77,16 +60,32 @@ class DownloadedSongViewModel : ViewModel() {
             song,
             object : ApiCallback<Void> {
                 override fun onSuccess(data: Void?) {
-                    songs.remove(song)
-                    tempSongs.remove(song)
                     onUnFavouriteSuccess()
-                    _totalSongs.value = tempSongs.size
                 }
 
                 override fun onFailure(message: String) {
                     Toast.makeText(
                         context,
                         "Failed to unfavourite song: $message",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+    }
+
+    fun addFavoriteSong(context: Context, song: Song, onAddFavoriteSuccess: () -> Unit) {
+        SongRepository.addFavouriteSong(
+            song,
+            object : ApiCallback<Void> {
+                override fun onSuccess(data: Void?) {
+                    onAddFavoriteSuccess()
+                }
+
+                override fun onFailure(message: String) {
+                    Toast.makeText(
+                        context,
+                        "Failed to add favourite song: $message",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
